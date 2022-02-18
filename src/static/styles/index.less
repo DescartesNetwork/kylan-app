@@ -1,5 +1,11 @@
 // antd
 @import url('~antd/dist/antd.less');
+@import url('./typography.less');
+
+// Typography
+@font-family: 'Cairo', sans-serif;
+@typography-title-margin-top: 0px;
+@typography-title-margin-bottom: 0px;
 
 // root
 #root {
@@ -79,12 +85,6 @@
   }
 }
 
-// Mint amount
-.mint-amount {
-  input {
-    text-align: center;
-  }
-}
 .pay-select {
   .kylan-select-selector {
     padding: 0 8px 0 0 !important;
@@ -99,11 +99,33 @@
   }
 }
 
+.pay-button {
+  padding: 4px;
+  background: #e0e1ee;
+  .kylan-radio-button-wrapper {
+    border: none;
+    color: #7b7b85;
+    box-shadow: unset !important;
+    background: transparent;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    &::before {
+      display: none !important;
+    }
+  }
+  .kylan-radio-button-checked {
+    background: #f0f0f6;
+    color: #232333 !important;
+  }
+}
+
 .pay-icon {
   border-left: 5px solid #f0f0f6;
   .kylan-image {
     background: #fff;
-    position: relative;
+    position: absolute;
+    width: 40px;
     top: 50%;
     padding: 5px 8px;
     line-height: 14px;
@@ -111,5 +133,61 @@
     left: -22px;
     border: 5px solid #f0f0f6;
     text-align: center;
+  }
+}
+
+.special-font {
+  input {
+    font-weight: 800;
+    text-align: center;
+    margin-right: -71px;
+    &::placeholder {
+      color: #c2c2dd;
+    }
+  }
+  &-large {
+    input {
+      font-size: 96px;
+      height: 96px;
+    }
+  }
+  &-medium {
+    input {
+      font-size: 72px;
+      height: 72px;
+    }
+  }
+  &-small {
+    input {
+      font-size: 48px;
+      height: 48px;
+    }
+  }
+  &-xsmall {
+    input {
+      font-size: 24px;
+      height: 24px;
+    }
+  }
+  .kylan-input-suffix {
+    position: relative;
+    padding-left: 6px;
+    background: #e0e1ee;
+  }
+}
+// button
+.pixel-btn {
+  font-size: 16px;
+  font-weight: 700;
+  padding: 6px;
+  background: #6667ab;
+  border: 1px solid #0e0f45;
+  transform: translate(4px, -4px);
+  transition: all 0.05s linear;
+  color: #fff;
+  box-shadow: -4px 4px #393a82;
+  &:active {
+    transform: translate(3px, -3px);
+    box-shadow: -3px 3px #393a82;
   }
 }

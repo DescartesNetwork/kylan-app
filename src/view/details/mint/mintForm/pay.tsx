@@ -1,4 +1,6 @@
-import { Button, Col, Row } from 'antd'
+import { Col, Row } from 'antd'
+import IonIcon from 'components/ionicon'
+import PixelButton from 'components/ionicon/pixelButton'
 import Amount from './amount'
 import Infomations from './infomations'
 
@@ -12,7 +14,9 @@ const Pay = () => {
         <Infomations />
       </Col>
       <Col span={24}>
-        <Button block>Connect wallet</Button>
+        <PixelButton suffix={<IonIcon name="wallet-outline" />} block>
+          Connect wallet
+        </PixelButton>
       </Col>
     </Row>
   )

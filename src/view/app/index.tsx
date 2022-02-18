@@ -18,9 +18,9 @@ const App = () => {
           <Header />
         </Card>
       </Affix>
-      <Layout>
+      <Layout style={{ padding: '0 16px 16px' }}>
         <Row gutter={16} justify="center">
-          <Col span={8}>
+          <Col xs={24} lg={16} xl={8}>
             <Details />
           </Col>
         </Row>

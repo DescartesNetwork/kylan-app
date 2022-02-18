@@ -22,6 +22,7 @@ import {
   SolflareWallet,
   SolflareExtensionWallet,
 } from './lib'
+import PixelButton from 'components/ionicon/pixelButton'
 
 const Wallet = ({ style = {} }: { style?: CSSProperties }) => {
   const dispatch = useDispatch<AppDispatch>()
@@ -64,14 +65,13 @@ const Wallet = ({ style = {} }: { style?: CSSProperties }) => {
     )
   return (
     <Fragment>
-      <Button
+      <PixelButton
         style={style}
-        type="primary"
-        icon={<IonIcon name="wallet-outline" />}
+        suffix={<IonIcon name="wallet-outline" />}
         onClick={() => dispatch(openWallet())}
       >
         Connect Wallet
-      </Button>
+      </PixelButton>
       <Login />
     </Fragment>
   )

@@ -12,7 +12,7 @@ const Mint = () => {
         </PixelCard>
       </Col>
       <Col span={24}>
-        <PixelCard>
+        <PixelCard bodyStyle={{ padding: 28 }}>
           <MintForm />
         </PixelCard>
       </Col>
