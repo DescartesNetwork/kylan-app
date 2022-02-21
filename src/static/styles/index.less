@@ -84,6 +84,11 @@
     padding: 15px 25px;
   }
 }
+.pixel-modal {
+  .kylan-modal-content {
+    background: transparent !important;
+  }
+}
 
 .pay-select {
   .kylan-select-selector {
@@ -110,18 +115,27 @@
     font-size: 16px;
     font-weight: 700;
     text-align: center;
+    &:hover,
+    &-checked {
+      color: #232333;
+    }
     &::before {
       display: none !important;
     }
   }
   .kylan-radio-button-checked {
     background: #f0f0f6;
-    color: #232333 !important;
   }
 }
 
 .pay-icon {
-  border-left: 5px solid #f0f0f6;
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9;
   .kylan-image {
     background: #fff;
     position: absolute;
@@ -130,9 +144,12 @@
     padding: 5px 8px;
     line-height: 14px;
     transform: translateY(-50%);
-    left: -22px;
+    left: -18px;
     border: 5px solid #f0f0f6;
     text-align: center;
+  }
+  @media (max-width: 575px) {
+    transform: rotate(90deg);
   }
 }
 
@@ -149,24 +166,28 @@
     input {
       font-size: 96px;
       height: 96px;
+      line-height: 96px;
     }
   }
   &-medium {
     input {
       font-size: 72px;
       height: 72px;
+      line-height: 72px;
     }
   }
   &-small {
     input {
       font-size: 48px;
       height: 48px;
+      line-height: 48px;
     }
   }
   &-xsmall {
     input {
       font-size: 24px;
       height: 24px;
+      line-height: 24px;
     }
   }
   .kylan-input-suffix {
@@ -189,5 +210,17 @@
   &:active {
     transform: translate(3px, -3px);
     box-shadow: -3px 3px #393a82;
+  }
+}
+
+.mint-hiw {
+  border: 1px solid #0e0f45;
+  background: #f0f0f7;
+  .kylan-collapse-content {
+    background: #f0f0f7;
+    border: none;
+    .kylan-collapse-content-box {
+      padding-top: 0;
+    }
   }
 }

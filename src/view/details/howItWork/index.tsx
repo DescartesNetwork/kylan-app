@@ -11,7 +11,7 @@ const HowItWork = () => {
         <Row gutter={[12, 12]}>
           {[1, 2, 3].map((item, idx) => (
             <Col span={24} key={idx + item}>
-              <Collapse>
+              <Collapse className="mint-hiw">
                 <Collapse.Panel header={`Mint ${item}`} key={item + idx}>
                   <Typography.Text>
                     Get KYLAN 1:1 with USD on homepage directly.

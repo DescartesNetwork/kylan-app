@@ -3,7 +3,7 @@ import { CSSProperties, ReactNode, useMemo } from 'react'
 import { Space } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 
-type ButtonProps = {
+type PixelButtonProps = {
   suffix?: ReactNode
   loading?: boolean
   onClick?: () => void
@@ -14,7 +14,7 @@ type ButtonProps = {
   disabled?: boolean
 }
 
-const PixelButton = (props: ButtonProps) => {
+const PixelButton = (props: PixelButtonProps) => {
   const { suffix, prefix, children, loading, block, disabled, style, ...rest } =
     props
 

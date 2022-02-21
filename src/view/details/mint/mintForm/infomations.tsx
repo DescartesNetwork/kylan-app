@@ -1,23 +1,14 @@
 import { ReactNode, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 
-import {
-  Avatar,
-  Card,
-  Col,
-  Row,
-  Select,
-  Space,
-  Typography,
-  Image,
-  Button,
-} from 'antd'
+import { Col, Row, Space, Typography, Button } from 'antd'
 import IonIcon from 'components/ionicon'
 import { numeric } from 'shared/util'
 
-import IconArrow from 'static/images/icon-arrow.svg'
 import {} from 'store/bid.reducer'
 import { AppState } from 'store'
+import CardPayBack from './cardPayBack'
+import { PayState } from 'constant'
 
 const RowContent = ({
   label = '',
@@ -40,6 +31,7 @@ const RowContent = ({
 const ExchangeRate = () => {
   const [isPayback, setIsPayback] = useState(false)
 
+  // E.g
   const { kylan, mint } = useMemo(() => {
     const rate = 0.98
     let kylan = 1
@@ -73,47 +65,15 @@ const ExchangeRate = () => {
 const Infomations = () => {
   const {
     bid: { bidAmount },
+    main: { printerType },
   } = useSelector((state: AppState) => state)
+
+  const payback = printerType === PayState.Payback
 
   return (
     <Row gutter={[24, 24]}>
       <Col span={24}>
-        <Card bordered={false} bodyStyle={{ padding: '0 24px' }}>
-          <Row justify="space-between">
-            <Col style={{ padding: '24px 0' }}>
-              <Space style={{ minWidth: 180 }} direction="vertical">
-                <Typography.Text type="secondary">Pay</Typography.Text>
-                <Select
-                  className="pay-select"
-                  bordered={false}
-                  dropdownMatchSelectWidth={170}
-                >
-                  <Select.Option>
-                    <Space align="center">
-                      <Avatar.Group>
-                        <Avatar size={24} />
-                        <Avatar size={24} />
-                      </Avatar.Group>
-                      <Typography.Text>USDC/SNTR</Typography.Text>
-                    </Space>
-                  </Select.Option>
-                </Select>
-              </Space>
-            </Col>
-            <Col className="pay-icon">
-              <Image src={IconArrow} preview={false} />
-            </Col>
-            <Col style={{ padding: '24px 0' }}>
-              <Space style={{ minWidth: 180 }} direction="vertical" align="end">
-                <Typography.Text type="secondary">Receive</Typography.Text>
-                <Space style={{ minHeight: 30 }} align="center">
-                  <Avatar size={24} />
-                  <Typography.Text>KYLAN</Typography.Text>
-                </Space>
-              </Space>
-            </Col>
-          </Row>
-        </Card>
+        <CardPayBack payback={payback} />
       </Col>
       <Col span={24}>
         <Row gutter={[10, 10]}>

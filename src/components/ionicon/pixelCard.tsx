@@ -1,11 +1,11 @@
 import { CSSProperties, ReactNode } from 'react'
 
-type PropsType = {
+type PixelCardProps = {
   children?: ReactNode
   bodyStyle?: CSSProperties
 }
 
-const PixelCard = (props: PropsType) => {
+const PixelCard = (props: PixelCardProps) => {
   const { bodyStyle, children } = props
 
   return (

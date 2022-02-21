@@ -1,6 +1,7 @@
 import { Affix, Card, Col, Layout, Row } from 'antd'
 import Header from 'view/header'
 import Details from 'view/details'
+import Watcher from 'watcher'
 
 const App = () => {
   return (
@@ -18,13 +19,14 @@ const App = () => {
           <Header />
         </Card>
       </Affix>
-      <Layout style={{ padding: '0 16px 16px' }}>
+      <Layout style={{ padding: '72px 16px 16px' }}>
         <Row gutter={16} justify="center">
           <Col xs={24} lg={16} xl={8}>
             <Details />
           </Col>
         </Row>
       </Layout>
+      <Watcher />
     </Layout>
   )
 }

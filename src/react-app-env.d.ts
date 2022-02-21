@@ -34,6 +34,12 @@ interface BigInt {
 }
 
 /**
+ * Declare module
+ */
+declare module '*.md'
+declare module 'flexsearch'
+
+/**
  * Declare namespace
  */
 declare namespace JSX {

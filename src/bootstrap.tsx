@@ -1,6 +1,7 @@
 import { render } from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
+import { UIProvider } from 'providers'
 
 import { ConfigProvider } from 'antd'
 import View from 'view/app'
@@ -12,11 +13,13 @@ import 'static/styles/index.less'
 
 render(
   <Provider store={store}>
-    <BrowserRouter>
-      <ConfigProvider prefixCls={'kylan'}>
-        <View />
-      </ConfigProvider>
-    </BrowserRouter>
+    <UIProvider>
+      <BrowserRouter>
+        <ConfigProvider prefixCls={'kylan'}>
+          <View />
+        </ConfigProvider>
+      </BrowserRouter>
+    </UIProvider>
   </Provider>,
   document.getElementById('root'),
 )
