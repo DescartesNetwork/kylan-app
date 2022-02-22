@@ -11,6 +11,8 @@ import {
 } from 'react'
 import { useSelector } from 'react-redux'
 
+import { ConfigProvider } from 'antd'
+
 import { AppState } from 'store'
 import { UIState } from 'store/ui.reducer'
 import { ConfigProviderProps } from 'antd/lib/config-provider'
@@ -35,12 +37,16 @@ const UIContextProvider = ({
 }) => {
   const { ui } = useSelector((state: AppState) => state)
   const provider = useMemo(() => ({ ui }), [ui])
+  const configProvider = {
+    getPopupContainer: () => document.getElementById('root') as HTMLElement,
+    ...{},
+  }
   return (
     <Context.Provider value={provider}>
       <section
         style={{ height: '100%', backgroundColor: 'transparent', ...style }}
       >
-        {children}
+        <ConfigProvider {...configProvider}>{children}</ConfigProvider>
       </section>
     </Context.Provider>
   )

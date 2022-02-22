@@ -11,6 +11,7 @@ const Details = () => {
       <Col span={24}>
         <HowItWork />
       </Col>
+      <Col span={24}></Col>
     </Row>
   )
 }

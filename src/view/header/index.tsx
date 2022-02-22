@@ -1,21 +1,16 @@
-import { useSelector } from 'react-redux'
-import { account } from '@senswap/sen-js'
+import { useSolana } from '@gokiprotocol/walletkit'
 
 import { Col, Row, Image } from 'antd'
 import Wallet from './wallet'
 import ActionCenter from './actionCenter'
 import Social from './social'
 
-import { AppState } from 'store'
-
-import Logo from 'static/images/logo.svg'
-import MobileLogo from 'static/images/logo-mobile.svg'
+import Logo from 'static/images/logo/logo.svg'
+import MobileLogo from 'static/images/logo/logo-mobile.svg'
 import { useUI } from 'providers'
 
 const Header = () => {
-  const {
-    wallet: { address: walletAddress },
-  } = useSelector((state: AppState) => state)
+  const { connected } = useSolana()
   const {
     ui: { infix },
   } = useUI()
@@ -32,9 +27,7 @@ const Header = () => {
           <Col>
             <Social />
           </Col>
-          <Col>
-            {!account.isAddress(walletAddress) ? <Wallet /> : <ActionCenter />}
-          </Col>
+          <Col>{!connected ? <Wallet /> : <ActionCenter />}</Col>
         </Row>
       </Col>
     </Row>

@@ -1,19 +1,21 @@
 import { useEffect, useCallback } from 'react'
+import { useDispatch } from 'react-redux'
 import { account } from '@senswap/sen-js'
+import { useSolana } from '@gokiprotocol/walletkit'
 
-import { AppDispatch, AppState } from 'store'
+import { AppDispatch } from 'store'
 import { updateWallet } from 'store/wallet.reducer'
-import { useDispatch, useSelector } from 'react-redux'
 
 // Watch id
 let watchId: any = null
 
 const WalletWatcher = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { address } = useSelector((state: AppState) => state.wallet)
+  const { publicKey } = useSolana()
+  const walletAddress = publicKey?.toBase58()
 
   const watchData = useCallback(async () => {
-    if (!account.isAddress(address)) {
+    if (!account.isAddress(walletAddress)) {
       try {
         await window.sentre.lamports.unwatch(watchId)
       } catch (er) {
@@ -23,14 +25,14 @@ const WalletWatcher = () => {
     } else {
       if (watchId) return console.warn('Already watched')
       watchId = window.sentre.lamports.watch(
-        address,
+        walletAddress,
         (er: string | null, re: number | null) => {
           if (er) return console.warn(er)
           return dispatch(updateWallet({ lamports: BigInt(re || 0) }))
         },
       )
     }
-  }, [dispatch, address])
+  }, [walletAddress, dispatch])
 
   useEffect(() => {
     watchData()

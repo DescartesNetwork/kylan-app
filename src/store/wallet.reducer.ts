@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { Lamports, SPLT, Swap, WalletInterface } from '@senswap/sen-js'
+import { account, Lamports, SPLT, Swap, WalletInterface } from '@senswap/sen-js'
 
 import configs from 'configs'
 
@@ -9,7 +9,6 @@ import configs from 'configs'
 
 export type WalletState = {
   visible: boolean
-  address: string
   lamports: bigint
 }
 
@@ -37,7 +36,6 @@ const destroyWindow = async () => {
 const NAME = 'wallet'
 const initialState: WalletState = {
   visible: false,
-  address: '',
   lamports: BigInt(0),
 }
 
@@ -55,12 +53,14 @@ export const closeWallet = createAsyncThunk(`${NAME}/closeWallet`, async () => {
 
 export const connectWallet = createAsyncThunk(
   `${NAME}/connectWallet`,
-  async (wallet: any) => {
-    if (!wallet) throw new Error('Invalid wallet instance')
+  async ({ wallet, walletAddress }: { wallet: any; walletAddress: string }) => {
+    if (!wallet || !account.isAddress(walletAddress))
+      throw new Error('Invalid wallet instance')
     await initializeWindow(wallet)
-    const address = await wallet.getAddress()
-    const lamports = await window.sentre.lamports.getLamports(address)
-    return { address, lamports: BigInt(lamports), visible: false }
+    console.log('console.log 1')
+    // const address = await wallet.getAddress()
+    const lamports = await window.sentre.lamports.getLamports(walletAddress)
+    return { lamports: BigInt(lamports), visible: false }
   },
 )
 

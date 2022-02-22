@@ -1,18 +1,27 @@
-import { Button, Popover, Space } from 'antd'
+import { Button, Image, Popover, Space } from 'antd'
 import IonIcon from 'components/ionicon'
 import { useUI } from 'providers'
 
-const SOCIAL_ICON = ['logo-medium', 'logo-twitter', 'logo-telegram']
+import Telegram from 'static/images/social/icon-tele.svg'
+import Twitter from 'static/images/social/icon-tw.svg'
+import Medium from 'static/images/social/icon-medium.svg'
+
+const SOCIAL = [
+  { icon: Medium, url: '' },
+  { icon: Telegram, url: '' },
+  { icon: Twitter, url: '' },
+]
 
 const MenuSocial = ({ vertical = false }: { vertical?: boolean }) => {
   const directType = vertical ? 'vertical' : 'horizontal'
   return (
     <Space direction={directType}>
-      {SOCIAL_ICON?.map((icon, idx) => (
+      {SOCIAL.map((item, idx) => (
         <Button
           type="text"
           shape="circle"
-          icon={<IonIcon name={icon} key={idx} />}
+          icon={<Image src={item.icon} preview={false} />}
+          onClick={() => window.open(item.url, '_blank')}
           key={idx}
         />
       ))}

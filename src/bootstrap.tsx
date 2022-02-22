@@ -1,7 +1,9 @@
+import { Fragment } from 'react'
 import { render } from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
-import { UIProvider } from 'providers'
+import { AccountProvider, UIProvider, WalletProvider } from 'providers'
+import { WalletKitProvider } from '@gokiprotocol/walletkit'
 
 import { ConfigProvider } from 'antd'
 import View from 'view/app'
@@ -11,12 +13,23 @@ import reportWebVitals from 'reportWebVitals'
 
 import 'static/styles/index.less'
 
+const APP_CONFIG = {
+  name: 'kylan_app',
+  icon: <Fragment />,
+}
+
 render(
   <Provider store={store}>
     <UIProvider>
       <BrowserRouter>
         <ConfigProvider prefixCls={'kylan'}>
-          <View />
+          <WalletProvider>
+            <AccountProvider>
+              <WalletKitProvider app={APP_CONFIG}>
+                <View />
+              </WalletKitProvider>
+            </AccountProvider>
+          </WalletProvider>
         </ConfigProvider>
       </BrowserRouter>
     </UIProvider>

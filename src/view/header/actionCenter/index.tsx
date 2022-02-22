@@ -1,29 +1,43 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useSolana } from '@gokiprotocol/walletkit'
 
-import { Row, Col, Button, Space, Popover, Typography } from 'antd'
+import { Row, Col, Button, Space, Popover, Typography, Avatar } from 'antd'
 import IonIcon from 'components/ionicon'
-import WalletInfo from './walletInfo'
 import Network from './network'
-
-import { AppDispatch, AppState } from 'store'
-import { shortenAddress } from 'shared/util'
 import WalletAvatar from './walletAvatar'
-import { disconnectWallet } from 'store/wallet.reducer'
 
+import { numeric, shortenAddress } from 'shared/util'
+
+import logo from 'static/images/logo/logo-mobile.svg'
 import './index.less'
+import { useCallback, useEffect, useState } from 'react'
+import { utils } from '@senswap/sen-js'
 
 const ActionCenter = () => {
-  const dispatch = useDispatch<AppDispatch>()
-  const {
-    wallet: { address: walletAddress },
-  } = useSelector((state: AppState) => state)
+  const [lamports, setLamports] = useState('0')
+  const { disconnect, publicKey, provider } = useSolana()
+  const walletAddress = publicKey?.toBase58() || ''
+
+  const getLamports = useCallback(async () => {
+    if (!publicKey) return
+    const balance = await provider.connection.getBalance(publicKey)
+    const lamports = utils.undecimalize(BigInt(balance), 9)
+    console.log(lamports, ' lamports')
+    setLamports(lamports)
+  }, [provider.connection, publicKey])
+
+  useEffect(() => {
+    getLamports()
+  }, [getLamports])
 
   return (
-    <Space>
+    <Space className="wallet-center">
+      <Space className="kylan-balance" size={12}>
+        <Avatar size={24} src={logo} />
+        <Typography.Text>$1</Typography.Text>
+      </Space>
       <Popover
         trigger="click"
         placement="bottomRight"
-        title={<WalletInfo />}
         content={
           <Row gutter={[16, 16]} style={{ maxWidth: 194 }}>
             <Col span={24}>
@@ -33,7 +47,7 @@ const ActionCenter = () => {
               <Space
                 size={15}
                 style={{ cursor: 'pointer' }}
-                onClick={() => dispatch(disconnectWallet())}
+                onClick={disconnect}
               >
                 <IonIcon className="action-center-icon " name="power-outline" />
                 <Typography.Text>Disconnect</Typography.Text>
@@ -42,15 +56,11 @@ const ActionCenter = () => {
           </Row>
         }
       >
-        <Button style={{ fontWeight: 500, padding: '3px 12px' }} type="ghost">
-          <Space size={16}>
-            <Typography.Text>
-              <Space>
-                <WalletAvatar />
-                {shortenAddress(walletAddress, 3, '...')}
-              </Space>
-            </Typography.Text>
-            <IonIcon style={{ color: '#7A7B85' }} name="chevron-down-outline" />
+        <Button className="wallet-balance">
+          <Space>
+            <WalletAvatar />
+            <span>${numeric(lamports).format('0,0.[00]a')}</span>
+            {shortenAddress(walletAddress, 3, '...')}
           </Space>
         </Button>
       </Popover>

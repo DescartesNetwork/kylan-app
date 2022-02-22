@@ -1,13 +1,12 @@
 import { useState } from 'react'
+import { useSolana } from '@gokiprotocol/walletkit'
 
 import { Row, Col, Tooltip, Typography, Popover, Space } from 'antd'
 import QRCode from 'qrcode.react'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import WalletAvatar from './walletAvatar'
 
-import { AppState } from 'store'
 import { shortenAddress } from 'shared/util'
-import { useSelector } from 'react-redux'
 import IonIcon from 'components/ionicon'
 
 const QR = ({ address }: { address: string }) => {
@@ -33,8 +32,9 @@ const QR = ({ address }: { address: string }) => {
 }
 
 const WalletInfo = () => {
-  const { address } = useSelector((state: AppState) => state.wallet)
   const [copied, setCopied] = useState(false)
+  const { publicKey } = useSolana()
+  const walletAddress = publicKey?.toBase58() || ''
 
   const onCopy = async () => {
     setCopied(true)
@@ -48,18 +48,20 @@ const WalletInfo = () => {
       <Col flex="auto">
         <Space size={12}>
           <WalletAvatar />
-          <Typography.Text>{shortenAddress(address, 3, '...')}</Typography.Text>
+          <Typography.Text>
+            {shortenAddress(walletAddress, 3, '...')}
+          </Typography.Text>
         </Space>
       </Col>
       <Col>
         <Tooltip title="Copied" visible={copied}>
-          <CopyToClipboard text={address} onCopy={onCopy}>
+          <CopyToClipboard text={walletAddress} onCopy={onCopy}>
             <IonIcon name="copy-outline" style={{ cursor: 'pointer' }} />
           </CopyToClipboard>
         </Tooltip>
       </Col>
       <Col>
-        <QR address={address} />
+        <QR address={walletAddress} />
       </Col>
     </Row>
   )
