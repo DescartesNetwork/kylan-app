@@ -1,6 +1,6 @@
 import { Col, Row } from 'antd'
 import IonIcon from 'components/ionicon'
-import PixelButton from 'components/ionicon/pixelButton'
+import PixelButton from 'components/pixelButton'
 import Amount from './amount'
 import Infomations from './infomations'
 

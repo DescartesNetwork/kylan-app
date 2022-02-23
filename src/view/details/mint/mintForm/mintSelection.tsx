@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { Avatar, Col, Modal, Row, Space, Typography } from 'antd'
 import IonIcon from 'components/ionicon'
-import PixelCard from 'components/ionicon/pixelCard'
+import PixelCard from 'components/pixelCard'
 import { MintAvatar, MintSymbol } from 'shared/antd/mint'
 
 type MintProps = {

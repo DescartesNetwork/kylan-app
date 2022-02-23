@@ -3,7 +3,7 @@ import { useWalletKit } from '@gokiprotocol/walletkit'
 
 import IonIcon from 'components/ionicon'
 
-import PixelButton from 'components/ionicon/pixelButton'
+import PixelButton from 'components/pixelButton'
 
 const Wallet = ({ style = {} }: { style?: CSSProperties }) => {
   const { connect } = useWalletKit()

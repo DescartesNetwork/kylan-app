@@ -1,5 +1,5 @@
 import { Col, Row } from 'antd'
-import PixelCard from 'components/ionicon/pixelCard'
+import PixelCard from 'components/pixelCard'
 import MintForm from './mintForm'
 import MintHeader from './mintHeader'
 
