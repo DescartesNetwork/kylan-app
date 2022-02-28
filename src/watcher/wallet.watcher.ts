@@ -1,10 +1,11 @@
 import { useEffect, useCallback } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { account } from '@senswap/sen-js'
 import { useSolana } from '@gokiprotocol/walletkit'
 
-import { AppDispatch } from 'store'
-import { initializeWindowKylan, updateWallet } from 'store/wallet.reducer'
+import { AppDispatch, AppState } from 'store'
+import { initializeWallet, updateWallet } from 'store/wallet.reducer'
+import { isAddress } from '@project-kylan/core'
 
 // Watch id
 let watchId: any = null
@@ -12,13 +13,9 @@ let watchId: any = null
 const WalletWatcher = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { publicKey, wallet } = useSolana()
-  const walletAddress = publicKey?.toBase58()
-
-  const initWindowKylan = useCallback(async () => {
-    if (window.kylan?.wallet || !wallet || !account.isAddress(walletAddress))
-      return
-    await dispatch(initializeWindowKylan({ wallet, walletAddress }))
-  }, [dispatch, wallet, walletAddress])
+  const {
+    wallet: { address: walletAddress },
+  } = useSelector((state: AppState) => state)
 
   const watchData = useCallback(async () => {
     if (!account.isAddress(walletAddress)) {
@@ -41,8 +38,9 @@ const WalletWatcher = () => {
   }, [walletAddress, dispatch])
 
   useEffect(() => {
-    initWindowKylan()
-  }, [initWindowKylan])
+    if (wallet && isAddress(publicKey?.toBase58()))
+      dispatch(initializeWallet({ wallet }))
+  }, [dispatch, wallet, publicKey])
 
   useEffect(() => {
     watchData()

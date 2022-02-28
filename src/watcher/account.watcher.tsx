@@ -1,9 +1,9 @@
 import { Fragment, useCallback, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { account } from '@senswap/sen-js'
 
 import { AppDispatch, AppState } from 'store'
 import { getAccounts, upsetAccount } from 'store/accounts.reducer'
-import { useDispatch, useSelector } from 'react-redux'
 
 // Watch id
 let watchId = 0

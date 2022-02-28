@@ -6,7 +6,7 @@
     "@emotion/react": "^11.8.1",
     "@emotion/styled": "^11.8.1",
     "@gokiprotocol/walletkit": "^1.6.4",
-    "@project-kylan/core": "^0.1.7",
+    "@project-kylan/core": "^0.1.8",
     "@project-serum/anchor": "^0.22.0",
     "@project-serum/sol-wallet-adapter": "^0.2.6",
     "@reduxjs/toolkit": "^1.7.2",
@@ -31,10 +31,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "REACT_APP_ENV=development craco start",
+    "build": "REACT_APP_ENV=production craco build",
+    "test": "craco test"
   },
   "eslintConfig": {
     "extends": [

@@ -19,7 +19,6 @@ import PixelButton from 'components/pixelButton'
 
 import configs from 'configs'
 import { useMint } from 'providers'
-import useKylan from 'hook/useKylan'
 import { solExplorer } from 'shared/util'
 import kylanIcon from 'static/images/logo/logo-mobile.svg'
 
@@ -44,7 +43,6 @@ const NewCertificate = ({
   const [fee, setFee] = useState('0')
   const [loading, setLoading] = useState(false)
   const { tokenProvider } = useMint()
-  const kylan = useKylan()
   const { endpoint, publicKey } = useSolana()
 
   const walletAddress = publicKey?.toBase58() || ''
@@ -82,10 +80,12 @@ const NewCertificate = ({
   )
 
   const onNewCertificate = useCallback(async () => {
+    const { kylan } = window.kylan
     if (
       !account.isAddress(printerAddress) ||
       !account.isAddress(soureAddressSelected) ||
-      !price
+      !price ||
+      !kylan
     )
       return
     setLoading(true)
@@ -95,14 +95,12 @@ const NewCertificate = ({
         walletAddress,
         soureAddressSelected,
       )
-      const { txId } =
-        (await kylan?.initializeCert(
-          printerAddress,
-          soureAddressSelected,
-          taxmanAddress,
-          priceBN,
-        )) || {}
-      if (!txId) return
+      const { txId } = await kylan.initializeCert(
+        printerAddress,
+        soureAddressSelected,
+        taxmanAddress,
+        priceBN,
+      )
       await window.notify({
         type: 'success',
         description: `Certificate created successfully, Click to view details`,
@@ -114,7 +112,7 @@ const NewCertificate = ({
     } finally {
       setLoading(false)
     }
-  }, [kylan, onClose, price, soureAddressSelected, splt, walletAddress])
+  }, [onClose, price, soureAddressSelected, splt, walletAddress])
 
   return (
     <Modal

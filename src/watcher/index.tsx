@@ -1,7 +1,6 @@
 import { Fragment } from 'react'
 import UIWatcher from './ui.watcher'
 import AccountWatcher from './account.watcher'
-import PoolWatcher from './pool.watcher'
 import WalletWatcher from './wallet.watcher'
 
 const Watcher = () => {
@@ -9,7 +8,6 @@ const Watcher = () => {
     <Fragment>
       <UIWatcher />
       <AccountWatcher />
-      <PoolWatcher />
       <WalletWatcher />
     </Fragment>
   )

@@ -12,7 +12,6 @@ import { MintAvatar, MintSymbol } from 'shared/antd/mint'
 
 import NumericInput from 'shared/antd/numericInput'
 import { shortenAddress } from 'shared/util'
-import useKylan from 'hook/useKylan'
 
 const CertCardHeader = ({
   mintAddress,
@@ -94,9 +93,9 @@ const SelectCertStatus = ({
 const CertificateCard = ({ certAddress }: { certAddress: string }) => {
   const [certData, setCertData] = useState<CertData>()
   const [status, setStatus] = useState('')
-  const kylan = useKylan()
 
   const getCertData = useCallback(async () => {
+    const { kylan } = window.kylan
     if (!account.isAddress(certAddress) || !kylan) return
     try {
       const certData = await kylan.getCertData(certAddress)
@@ -104,7 +103,7 @@ const CertificateCard = ({ certAddress }: { certAddress: string }) => {
     } catch (err) {
       // Do notthing
     }
-  }, [certAddress, kylan])
+  }, [certAddress])
 
   useEffect(() => {
     getCertData()

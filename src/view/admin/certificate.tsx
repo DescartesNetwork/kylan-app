@@ -5,7 +5,6 @@ import IonIcon from 'components/ionicon'
 import CertificateCard from './certificateCard'
 import NewCertificate from './newCeritificate'
 
-import useKylan from 'hook/useKylan'
 import configs from 'configs'
 import { useAccount } from 'providers'
 
@@ -16,10 +15,10 @@ const {
 const Certificate = () => {
   const [visible, setVisible] = useState(false)
   const [certAddress, setCertAddress] = useState<string[]>()
-  const kylan = useKylan()
   const { accounts } = useAccount()
 
   const getCertAddress = useCallback(async () => {
+    const { kylan } = window.kylan
     if (!kylan || !accounts) return
     try {
       const listMints = Object.values(accounts).map(({ mint }) => mint)
@@ -31,7 +30,7 @@ const Certificate = () => {
     } catch (err: any) {
       window.notify({ type: 'error', description: err.message })
     }
-  }, [accounts, kylan])
+  }, [accounts])
 
   useEffect(() => {
     getCertAddress()

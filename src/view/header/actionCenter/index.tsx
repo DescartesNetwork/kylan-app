@@ -10,7 +10,6 @@ import WalletAvatar from './walletAvatar'
 
 import { AppState } from 'store'
 import { numeric, shortenAddress } from 'shared/util'
-import useKylan from 'hook/useKylan'
 import configs from 'configs'
 
 import logo from 'static/images/logo/logo-mobile.svg'
@@ -28,9 +27,9 @@ const ActionCenter = () => {
   const [kylanBalance, setKylanBalance] = useState(0)
   const { disconnect, publicKey } = useSolana()
   const walletAddress = publicKey?.toBase58() || ''
-  const kylan = useKylan()
 
   const getKylanBalance = useCallback(async () => {
+    const { kylan } = window.kylan
     if (!kylan || !account.isAddress(mintSelected)) return
     try {
       const chequeAddress = await kylan.deriveChequeAddress(
@@ -43,7 +42,7 @@ const ActionCenter = () => {
     } catch (err: any) {
       setKylanBalance(0)
     }
-  }, [kylan, mintSelected])
+  }, [mintSelected])
 
   useEffect(() => {
     getKylanBalance()
@@ -80,7 +79,7 @@ const ActionCenter = () => {
           <Space>
             <WalletAvatar />
             <span>
-              ${numeric(utils.undecimalize(lamports, 9)).format('0,0.[00]a')}
+              ◎ {numeric(utils.undecimalize(lamports, 9)).format('0,0.[00]a')}
             </span>
             {shortenAddress(walletAddress, 3, '...')}
           </Space>

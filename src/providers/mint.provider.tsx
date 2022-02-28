@@ -9,12 +9,12 @@ import {
   ReactNode,
   useMemo,
 } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { account } from '@senswap/sen-js'
 
 import { AppDispatch, AppState } from 'store'
 import { getMint as _getMint, MintsState } from 'store/mints.reducer'
 import TokenProvider from './tokenProvider'
-import { account } from '@senswap/sen-js'
-import { useDispatch, useSelector } from 'react-redux'
 
 const tokenProvider = new TokenProvider()
 const Context = createContext<MintProvider>({} as MintProvider)
@@ -31,7 +31,7 @@ export type MintProvider = {
  */
 const MintContextProvider = ({ children }: { children: ReactNode }) => {
   const dispatch = useDispatch<AppDispatch>()
-  const { mints, pools } = useSelector((state: AppState) => state)
+  const { mints } = useSelector((state: AppState) => state)
   const getMint = useCallback(
     async (...agrs: Parameters<typeof _getMint>) =>
       await dispatch(_getMint(...agrs)).unwrap(),
@@ -44,17 +44,12 @@ const MintContextProvider = ({ children }: { children: ReactNode }) => {
       // If the token is in token provider, return its decimals
       const tokenInfo = await tokenProvider.findByAddress(mintAddress)
       if (tokenInfo?.decimals) return tokenInfo.decimals
-      // If the token is lp, return 9 as default
-      const index = Object.values(pools).findIndex(
-        ({ mint_lpt }) => mint_lpt === mintAddress,
-      )
-      if (index >= 0) return 9
       // Fetch from the clustters
       const mintData = await getMint({ address: mintAddress })
       if (mintData[mintAddress]?.decimals) return mintData[mintAddress].decimals
       throw new Error('Cannot find mint decimals')
     },
-    [getMint, pools],
+    [getMint],
   )
   const provider = useMemo(
     () => ({ mints, getMint, getDecimals, tokenProvider }),

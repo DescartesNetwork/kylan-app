@@ -7,32 +7,21 @@ import { BN } from '@project-serum/anchor'
 import IonIcon from 'components/ionicon'
 import PixelButton from 'components/pixelButton'
 
-import useKylan from 'hook/useKylan'
 import { AppDispatch, AppState } from 'store'
 import configs from 'configs'
 import { solExplorer } from 'shared/util'
 import { setBidAmount } from 'store/bid.reducer'
-import { initializeWindowKylan } from 'store/wallet.reducer'
 
 const {
   sol: { printerAddress },
 } = configs
 
 const ConnectWallet = () => {
-  const dispatch = useDispatch<AppDispatch>()
   const { connect } = useWalletKit()
-  const { wallet, publicKey } = useSolana()
-  const walletAddress = publicKey?.toBase58() || ''
-
-  const onConnectWallet = useCallback(async () => {
-    await connect()
-    if (!wallet || !account.isAddress(walletAddress)) return
-    dispatch(initializeWindowKylan({ wallet, walletAddress }))
-  }, [connect, dispatch, wallet, walletAddress])
 
   return (
     <PixelButton
-      onClick={onConnectWallet}
+      onClick={connect}
       suffix={<IonIcon name="wallet-outline" />}
       block
     >
@@ -48,9 +37,9 @@ const MintToken = () => {
     main: { mintSelected },
     bid: { bidAmount },
   } = useSelector((state: AppState) => state)
-  const kylan = useKylan()
 
   const onDetectToInitCheque = useCallback(async () => {
+    const { kylan } = window.kylan
     if (!kylan) return
     try {
       const chequeAddress = await kylan.deriveChequeAddress(
@@ -65,9 +54,10 @@ const MintToken = () => {
       //try to create cheque
       await kylan.initializeCheque(printerAddress, mintSelected)
     }
-  }, [kylan, mintSelected])
+  }, [mintSelected])
 
   const onMint = useCallback(async () => {
+    const { kylan } = window.kylan
     if (!account.isAddress(mintSelected) || !kylan || !bidAmount) return
     setLoading(true)
     const bidAmountBN = Number(bidAmount) * Math.pow(10, 6)
@@ -87,7 +77,7 @@ const MintToken = () => {
     } finally {
       setLoading(false)
     }
-  }, [bidAmount, dispatch, kylan, mintSelected, onDetectToInitCheque])
+  }, [bidAmount, dispatch, mintSelected, onDetectToInitCheque])
 
   return (
     <PixelButton

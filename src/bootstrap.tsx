@@ -5,7 +5,6 @@ import { Provider } from 'react-redux'
 import {
   AccountProvider,
   MintProvider,
-  PoolProvider,
   UIProvider,
   WalletProvider,
 } from 'providers'
@@ -31,13 +30,11 @@ render(
         <ConfigProvider prefixCls={'kylan'}>
           <WalletProvider>
             <AccountProvider>
-              <PoolProvider>
-                <MintProvider>
-                  <WalletKitProvider app={APP_CONFIG}>
-                    <View />
-                  </WalletKitProvider>
-                </MintProvider>
-              </PoolProvider>
+              <MintProvider>
+                <WalletKitProvider app={APP_CONFIG}>
+                  <View />
+                </WalletKitProvider>
+              </MintProvider>
             </AccountProvider>
           </WalletProvider>
         </ConfigProvider>

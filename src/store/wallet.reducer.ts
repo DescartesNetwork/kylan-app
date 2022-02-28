@@ -1,5 +1,6 @@
+import Kylan, { AnchorWallet } from '@project-kylan/core'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { Lamports, SPLT, Swap, WalletInterface } from '@senswap/sen-js'
+import { Lamports, SPLT, Swap } from '@senswap/sen-js'
 
 import configs from 'configs'
 
@@ -8,17 +9,17 @@ import configs from 'configs'
  */
 
 export type WalletState = {
-  visible: boolean
   address: string
   lamports: bigint
 }
 
-const initializeWindow = async (wallet: WalletInterface | undefined) => {
+const initializeWindow = async (wallet: AnchorWallet | undefined) => {
   const {
     sol: { node, spltAddress, splataAddress, swapAddress },
   } = configs
   window.kylan = {
     wallet,
+    kylan: wallet && new Kylan(wallet),
     lamports: new Lamports(node),
     splt: new SPLT(spltAddress, splataAddress, node),
     swap: new Swap(swapAddress, spltAddress, splataAddress, node),
@@ -26,7 +27,7 @@ const initializeWindow = async (wallet: WalletInterface | undefined) => {
 }
 
 const destroyWindow = async () => {
-  if (window.kylan?.wallet) window.kylan.wallet.disconnect()
+  // if (window.kylan?.wallet) window.kylan.wallet.disconnect()
   await initializeWindow(undefined)
 }
 
@@ -36,7 +37,6 @@ const destroyWindow = async () => {
 
 const NAME = 'wallet'
 const initialState: WalletState = {
-  visible: false,
   address: '',
   lamports: BigInt(0),
 }
@@ -45,19 +45,12 @@ const initialState: WalletState = {
  * Actions
  */
 
-export const openWallet = createAsyncThunk(`${NAME}/openWallet`, async () => {
-  return { visible: true }
-})
-
-export const closeWallet = createAsyncThunk(`${NAME}/closeWallet`, async () => {
-  return { visible: false }
-})
-
-export const initializeWindowKylan = createAsyncThunk(
-  `${NAME}/initializeWindowKylan`,
-  async ({ wallet, walletAddress }: { wallet: any; walletAddress: string }) => {
+export const initializeWallet = createAsyncThunk(
+  `${NAME}/initializeWallet`,
+  async ({ wallet }: { wallet: any }) => {
     if (!wallet) throw new Error('Invalid wallet instance')
     await initializeWindow(wallet)
+    const walletAddress = wallet.publicKey.toBase58()
     const lamports = await window.kylan.lamports.getLamports(walletAddress)
     return {
       address: walletAddress,
@@ -93,15 +86,7 @@ const slice = createSlice({
   extraReducers: (builder) =>
     void builder
       .addCase(
-        openWallet.fulfilled,
-        (state, { payload }) => void Object.assign(state, payload),
-      )
-      .addCase(
-        closeWallet.fulfilled,
-        (state, { payload }) => void Object.assign(state, payload),
-      )
-      .addCase(
-        initializeWindowKylan.fulfilled,
+        initializeWallet.fulfilled,
         (state, { payload }) => void Object.assign(state, payload),
       )
       .addCase(

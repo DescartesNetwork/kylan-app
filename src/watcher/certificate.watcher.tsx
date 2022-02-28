@@ -2,7 +2,6 @@ import { Fragment, useCallback, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 
 import { AppDispatch } from 'store'
-import useKylan from 'hook/useKylan'
 import { useAccount } from 'providers'
 import configs from 'configs'
 
@@ -16,12 +15,12 @@ let watchId = 0
 
 const CertificateWatcher = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const kylan = useKylan()
   const { accounts } = useAccount()
 
   const fetchData = useCallback(() => {}, [])
 
   const getCertAddress = useCallback(async () => {
+    const { kylan } = window.kylan
     if (!kylan || !accounts) return
     try {
       const listMints = Object.values(accounts).map(({ mint }) => mint)
@@ -33,7 +32,7 @@ const CertificateWatcher = () => {
     } catch (err: any) {
       window.notify({ type: 'error', description: err.message })
     }
-  }, [accounts, kylan])
+  }, [accounts])
 
   useEffect(() => {
     getCertAddress()

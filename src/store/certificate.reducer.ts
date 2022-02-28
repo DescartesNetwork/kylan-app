@@ -1,3 +1,4 @@
+import { AccountInfo, PublicKey } from '@solana/web3.js'
 import { CertData } from '@project-kylan/core'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { account } from '@senswap/sen-js'
@@ -21,7 +22,21 @@ const initialState: CertificateState = {}
 
 export const getCertificates = createAsyncThunk(
   `${NAME}/getCertificates`,
-  async ({ bulk }: { bulk: CertData }) => {
+  async () => {
+    const { kylan } = window.kylan
+    if (!kylan) return
+    const { program } = kylan
+    // Get all certs
+    const value: Array<{ pubkey: PublicKey; account: AccountInfo<Buffer> }> =
+      await program.provider.connection.getProgramAccounts(program.programId, {
+        filters: [{ dataSize: program.account.cert.size }],
+      })
+    let bulk: CertificateState = {}
+    value.forEach(({ pubkey, account: { data: buf } }) => {
+      const address = pubkey.toBase58()
+      const data = kylan.parseCertData(buf)
+      bulk[address] = data
+    })
     return bulk
   },
 )
@@ -31,13 +46,14 @@ export const getCertificate = createAsyncThunk<
   { address: string },
   { state: any }
 >(`${NAME}/getCertificate`, async ({ address }, { getState }) => {
+  const { kylan } = window.kylan
+  if (!kylan) throw Error('Wallet is not connected')
   if (!account.isAddress(address)) throw new Error('Invalid account address')
   const {
     certificates: { [address]: data },
   } = getState()
   if (data) return { [address]: data }
-  const { splt } = window.kylan
-  const raw = await splt.getAccountData(address)
+  const raw = await kylan.getCertData(address)
   return { [address]: raw }
 })
 

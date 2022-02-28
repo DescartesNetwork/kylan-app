@@ -12,8 +12,6 @@ export type UIState = {
   width: number
   infix: Infix
   touchable: boolean
-  visibleActionCenter: boolean
-  visibleInstaller: boolean
 }
 
 const getInfix = (): Infix => {
@@ -43,8 +41,6 @@ const initialState: UIState = {
   width: window.innerWidth,
   infix: getInfix(),
   touchable: isTouchable(),
-  visibleActionCenter: false,
-  visibleInstaller: false,
 }
 
 /**
@@ -64,20 +60,6 @@ export const resize = createAsyncThunk(`${NAME}/resize`, async () => {
   return { width, infix }
 })
 
-export const setVisibleActionCenter = createAsyncThunk(
-  `${NAME}/setVisibleActionCenter`,
-  async (visible: boolean) => {
-    return { visibleActionCenter: visible }
-  },
-)
-
-export const setVisibleInstaller = createAsyncThunk(
-  `${NAME}/setVisibleInstaller`,
-  async (visible: boolean) => {
-    return { visibleInstaller: visible }
-  },
-)
-
 /**
  * Usual procedure
  */
@@ -94,14 +76,6 @@ const slice = createSlice({
       )
       .addCase(
         resize.fulfilled,
-        (state, { payload }) => void Object.assign(state, payload),
-      )
-      .addCase(
-        setVisibleActionCenter.fulfilled,
-        (state, { payload }) => void Object.assign(state, payload),
-      )
-      .addCase(
-        setVisibleInstaller.fulfilled,
         (state, { payload }) => void Object.assign(state, payload),
       ),
 })
