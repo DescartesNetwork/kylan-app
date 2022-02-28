@@ -4,12 +4,6 @@ import { account } from '@senswap/sen-js'
 
 import { AppDispatch, AppState } from 'store'
 import { getCertificates } from 'store/certificate.reducer'
-import { useAccount } from 'providers'
-import configs from 'configs'
-
-const {
-  sol: { printerAddress },
-} = configs
 
 const CertificateWatcher = () => {
   const dispatch = useDispatch<AppDispatch>()

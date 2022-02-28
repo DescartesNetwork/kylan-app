@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import { Button, Col, Row, Space, Typography } from 'antd'
@@ -7,11 +7,6 @@ import CertificateCard from './certificateCard'
 import NewCertificate from './newCeritificate'
 
 import { AppState } from 'store'
-import configs from 'configs'
-
-const {
-  sol: { printerAddress },
-} = configs
 
 const Certificate = () => {
   const [visible, setVisible] = useState(false)

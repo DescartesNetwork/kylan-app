@@ -1,8 +1,6 @@
-import { Fragment, ReactNode, useCallback, useEffect, useState } from 'react'
+import { Fragment, ReactNode, useState } from 'react'
 import { useSelector } from 'react-redux'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import { account } from '@senswap/sen-js'
-import { CertData } from '@project-kylan/core'
 
 import { Col, Row, Select, Space, Tooltip, Typography } from 'antd'
 import PixelButton from 'components/pixelButton'

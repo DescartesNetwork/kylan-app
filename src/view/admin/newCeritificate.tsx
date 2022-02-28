@@ -1,8 +1,7 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { account, AccountData } from '@senswap/sen-js'
 import { BN } from '@project-serum/anchor'
-import { useSolana } from '@gokiprotocol/walletkit'
 
 import { Avatar, Card, Col, Modal, Row, Select, Space, Typography } from 'antd'
 import AccountItem from 'components/accountItem'
@@ -39,7 +38,6 @@ const NewCertificate = ({
   const [fee, setFee] = useState('0')
   const [loading, setLoading] = useState(false)
   const { tokenProvider } = useMint()
-  const { endpoint, publicKey } = useSolana()
   const {
     wallet: { address: walletAddress },
   } = useSelector((state: AppState) => state)
