@@ -1,20 +1,21 @@
 import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { Col, Modal, Row, Space, Typography } from 'antd'
 import IonIcon from 'components/ionicon'
 import PixelCard from 'components/pixelCard'
 import { MintAvatar, MintSymbol } from 'shared/antd/mint'
+
 import { useAccount } from 'providers'
-import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, AppState } from 'store'
 import { onSelectedMint } from 'store/main.reducer'
 
-type MintProps = {
+type MintInfoProps = {
   mintAddress?: string
   onClick?: () => void
 }
 
-const MintInfo = ({ onClick = () => {} }: MintProps) => {
+const MintInfo = ({ onClick = () => {} }: MintInfoProps) => {
   const {
     main: { mintSelected },
   } = useSelector((state: AppState) => state)

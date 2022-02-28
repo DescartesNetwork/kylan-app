@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 
 import { Button, Col, Row, Space, Typography } from 'antd'
 import IonIcon from 'components/ionicon'
 import CertificateCard from './certificateCard'
 import NewCertificate from './newCeritificate'
 
+import { AppState } from 'store'
 import configs from 'configs'
-import { useAccount } from 'providers'
 
 const {
   sol: { printerAddress },
@@ -14,27 +15,9 @@ const {
 
 const Certificate = () => {
   const [visible, setVisible] = useState(false)
-  const [certAddress, setCertAddress] = useState<string[]>()
-  const { accounts } = useAccount()
+  const { certificates } = useSelector((state: AppState) => state)
 
-  const getCertAddress = useCallback(async () => {
-    const { kylan } = window.kylan
-    if (!kylan || !accounts) return
-    try {
-      const listMints = Object.values(accounts).map(({ mint }) => mint)
-      const promise = listMints.map((mint) => {
-        return kylan.deriveCertAddress(printerAddress, mint)
-      })
-      const listCertAddress = await Promise.all(promise)
-      setCertAddress(listCertAddress)
-    } catch (err: any) {
-      window.notify({ type: 'error', description: err.message })
-    }
-  }, [accounts])
-
-  useEffect(() => {
-    getCertAddress()
-  }, [getCertAddress])
+  const certAddresses = Object.keys(certificates).map((addr) => addr)
 
   return (
     <Row gutter={[24, 24]}>
@@ -57,7 +40,7 @@ const Certificate = () => {
       </Col>
       <Col span={24}>
         <Row gutter={[24, 24]}>
-          {certAddress?.map((certAddr, idx) => (
+          {certAddresses?.map((certAddr, idx) => (
             <CertificateCard certAddress={certAddr} key={certAddr + idx} />
           ))}
         </Row>

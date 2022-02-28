@@ -11,8 +11,7 @@ type SentreNotification = {
 interface Window {
   // Kylan
   kylan: {
-    wallet?: import('@project-kylan/core').AnchorWallet
-    kylan?: import('@project-kylan/core').default
+    kylan: import('@project-kylan/core').default
     lamports: import('@senswap/sen-js').Lamports
     splt: import('@senswap/sen-js').SPLT
     swap: import('@senswap/sen-js').Swap

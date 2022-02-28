@@ -1,13 +1,17 @@
-import { ComponentProps, ElementType, Fragment, useCallback } from 'react'
+import { ComponentProps, ElementType, useCallback } from 'react'
 import { Route, Redirect } from 'react-router-dom'
 import { account } from '@senswap/sen-js'
 import { useSolana } from '@gokiprotocol/walletkit'
 
+import configs from 'configs'
+
+const {
+  admin: { adminAddresses },
+} = configs
+
 export type PrivateRouteProps = {
   component: ElementType
 } & ComponentProps<typeof Route>
-
-const ADDMIN_ADDRESS = 'BkLRcJucoTF9GnxQUa94fkqZdoL9LTWCoT5gF54zVsJk'
 
 const PrivateRoute = ({ component: Component, ...rest }: PrivateRouteProps) => {
   const { publicKey } = useSolana()
@@ -15,8 +19,14 @@ const PrivateRoute = ({ component: Component, ...rest }: PrivateRouteProps) => {
 
   const render = useCallback(
     (props) => {
-      if (!account.isAddress(walletAddress)) return <Fragment />
-      if (walletAddress !== ADDMIN_ADDRESS) return <Redirect to={'/'} />
+      const pathname = encodeURIComponent(
+        window.location.href.replace(window.location.origin, ''),
+      )
+      if (
+        !account.isAddress(walletAddress) ||
+        !adminAddresses.includes(walletAddress)
+      )
+        return <Redirect to={'/home?redirect=' + pathname} />
       return <Component {...props} />
     },
     [walletAddress, Component],

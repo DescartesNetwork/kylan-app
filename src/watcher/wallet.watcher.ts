@@ -5,7 +5,6 @@ import { useSolana } from '@gokiprotocol/walletkit'
 
 import { AppDispatch, AppState } from 'store'
 import { initializeWallet, updateWallet } from 'store/wallet.reducer'
-import { isAddress } from '@project-kylan/core'
 
 // Watch id
 let watchId: any = null
@@ -38,8 +37,7 @@ const WalletWatcher = () => {
   }, [walletAddress, dispatch])
 
   useEffect(() => {
-    if (wallet && isAddress(publicKey?.toBase58()))
-      dispatch(initializeWallet({ wallet }))
+    dispatch(initializeWallet({ wallet }))
   }, [dispatch, wallet, publicKey])
 
   useEffect(() => {

@@ -1,11 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
-import {
-  account,
-  AccountData,
-  DEFAULT_SPLATA_PROGRAM_ADDRESS,
-  DEFAULT_SPLT_PROGRAM_ADDRESS,
-  SPLT,
-} from '@senswap/sen-js'
+import { useSelector } from 'react-redux'
+import { account, AccountData } from '@senswap/sen-js'
 import { BN } from '@project-serum/anchor'
 import { useSolana } from '@gokiprotocol/walletkit'
 
@@ -17,6 +12,7 @@ import Search from 'components/search'
 import NumericInput from 'shared/antd/numericInput'
 import PixelButton from 'components/pixelButton'
 
+import { AppState } from 'store'
 import configs from 'configs'
 import { useMint } from 'providers'
 import { solExplorer } from 'shared/util'
@@ -44,17 +40,9 @@ const NewCertificate = ({
   const [loading, setLoading] = useState(false)
   const { tokenProvider } = useMint()
   const { endpoint, publicKey } = useSolana()
-
-  const walletAddress = publicKey?.toBase58() || ''
-  const splt = useMemo(
-    () =>
-      new SPLT(
-        DEFAULT_SPLT_PROGRAM_ADDRESS,
-        DEFAULT_SPLATA_PROGRAM_ADDRESS,
-        endpoint,
-      ),
-    [endpoint],
-  )
+  const {
+    wallet: { address: walletAddress },
+  } = useSelector((state: AppState) => state)
 
   const onSearch = useCallback(
     async (accounts: Record<string, AccountData>) => {
@@ -80,21 +68,21 @@ const NewCertificate = ({
   )
 
   const onNewCertificate = useCallback(async () => {
-    const { kylan } = window.kylan
     if (
       !account.isAddress(printerAddress) ||
       !account.isAddress(soureAddressSelected) ||
-      !price ||
-      !kylan
+      !price
     )
       return
     setLoading(true)
     try {
+      const { splt } = window.kylan
       const priceBN = new BN(Number(price) * DECIMAL)
       const taxmanAddress = await splt.deriveAssociatedAddress(
         walletAddress,
         soureAddressSelected,
       )
+      const { kylan } = window.kylan
       const { txId } = await kylan.initializeCert(
         printerAddress,
         soureAddressSelected,
@@ -112,7 +100,7 @@ const NewCertificate = ({
     } finally {
       setLoading(false)
     }
-  }, [onClose, price, soureAddressSelected, splt, walletAddress])
+  }, [onClose, price, soureAddressSelected, walletAddress])
 
   return (
     <Modal

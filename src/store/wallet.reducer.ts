@@ -1,8 +1,23 @@
 import Kylan, { AnchorWallet } from '@project-kylan/core'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Lamports, SPLT, Swap } from '@senswap/sen-js'
+import { web3 } from '@project-serum/anchor'
 
 import configs from 'configs'
+
+const {
+  sol: { node, spltAddress, splataAddress, swapAddress },
+} = configs
+
+const dummyWallet: AnchorWallet = {
+  signTransaction: async (_: web3.Transaction) => {
+    throw new Error('Wallet is not connected')
+  },
+  signAllTransactions: async (_: web3.Transaction[]) => {
+    throw new Error('Wallet is not connected')
+  },
+  publicKey: web3.SystemProgram.programId,
+}
 
 /**
  * Interface & Utility
@@ -13,21 +28,21 @@ export type WalletState = {
   lamports: bigint
 }
 
+window.kylan = {
+  kylan: new Kylan(dummyWallet),
+  lamports: new Lamports(node),
+  splt: new SPLT(spltAddress, splataAddress, node),
+  swap: new Swap(swapAddress, spltAddress, splataAddress, node),
+}
+
 const initializeWindow = async (wallet: AnchorWallet | undefined) => {
-  const {
-    sol: { node, spltAddress, splataAddress, swapAddress },
-  } = configs
   window.kylan = {
-    wallet,
-    kylan: wallet && new Kylan(wallet),
-    lamports: new Lamports(node),
-    splt: new SPLT(spltAddress, splataAddress, node),
-    swap: new Swap(swapAddress, spltAddress, splataAddress, node),
+    ...window.kylan,
+    kylan: new Kylan(wallet || dummyWallet),
   }
 }
 
 const destroyWindow = async () => {
-  // if (window.kylan?.wallet) window.kylan.wallet.disconnect()
   await initializeWindow(undefined)
 }
 

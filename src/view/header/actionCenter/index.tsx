@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { account, utils } from '@senswap/sen-js'
 import { useSolana } from '@gokiprotocol/walletkit'
 
@@ -8,7 +8,8 @@ import IonIcon from 'components/ionicon'
 import Network from './network'
 import WalletAvatar from './walletAvatar'
 
-import { AppState } from 'store'
+import { AppState, AppDispatch } from 'store'
+import { disconnectWallet } from 'store/wallet.reducer'
 import { numeric, shortenAddress } from 'shared/util'
 import configs from 'configs'
 
@@ -20,17 +21,22 @@ const {
 } = configs
 
 const ActionCenter = () => {
+  const dispatch = useDispatch<AppDispatch>()
   const {
     main: { mintSelected },
-    wallet: { lamports },
+    wallet: { lamports, address: walletAddress },
   } = useSelector((state: AppState) => state)
   const [kylanBalance, setKylanBalance] = useState(0)
-  const { disconnect, publicKey } = useSolana()
-  const walletAddress = publicKey?.toBase58() || ''
+  const { disconnect } = useSolana()
+
+  const onDisconnectWallet = useCallback(async () => {
+    await disconnect()
+    await dispatch(disconnectWallet())
+  }, [disconnect, dispatch])
 
   const getKylanBalance = useCallback(async () => {
     const { kylan } = window.kylan
-    if (!kylan || !account.isAddress(mintSelected)) return
+    if (!account.isAddress(mintSelected)) return
     try {
       const chequeAddress = await kylan.deriveChequeAddress(
         printerAddress,
@@ -66,7 +72,7 @@ const ActionCenter = () => {
               <Space
                 size={15}
                 style={{ cursor: 'pointer' }}
-                onClick={disconnect}
+                onClick={onDisconnectWallet}
               >
                 <IonIcon className="action-center-icon " name="power-outline" />
                 <Typography.Text>Disconnect</Typography.Text>

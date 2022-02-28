@@ -1,4 +1,5 @@
 import { Fragment, ReactNode, useCallback, useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { account } from '@senswap/sen-js'
 import { CertData } from '@project-kylan/core'
@@ -9,6 +10,7 @@ import PixelCard from 'components/pixelCard'
 
 import IonIcon from 'components/ionicon'
 import { MintAvatar, MintSymbol } from 'shared/antd/mint'
+import { AppState } from 'store'
 
 import NumericInput from 'shared/antd/numericInput'
 import { shortenAddress } from 'shared/util'
@@ -91,24 +93,25 @@ const SelectCertStatus = ({
 }
 
 const CertificateCard = ({ certAddress }: { certAddress: string }) => {
-  const [certData, setCertData] = useState<CertData>()
+  // const [certData, setCertData] = useState<CertData>()
   const [status, setStatus] = useState('')
+  const { certificates } = useSelector((state: AppState) => state)
+  const certData = certificates[certAddress] || {}
 
-  const getCertData = useCallback(async () => {
-    const { kylan } = window.kylan
-    if (!account.isAddress(certAddress) || !kylan) return
-    try {
-      const certData = await kylan.getCertData(certAddress)
-      return setCertData(certData)
-    } catch (err) {
-      // Do notthing
-    }
-  }, [certAddress])
+  // const getCertData = useCallback(async () => {
+  //   const { kylan } = window.kylan
+  //   if (!account.isAddress(certAddress)) return
+  //   try {
+  //     const certData = await kylan.getCertData(certAddress)
+  //     return setCertData(certData)
+  //   } catch (err) {
+  //     // Do notthing
+  //   }
+  // }, [certAddress])
 
-  useEffect(() => {
-    getCertData()
-  }, [getCertData])
-
+  // useEffect(() => {
+  //   getCertData()
+  // }, [getCertData])
   if (!certData) return <Fragment />
   const price = certData.price.toNumber() / Math.pow(10, 6)
   const secureAddress = certData.secureToken.toBase58()

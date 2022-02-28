@@ -1,7 +1,9 @@
 import { Fragment, useCallback, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { account } from '@senswap/sen-js'
 
-import { AppDispatch } from 'store'
+import { AppDispatch, AppState } from 'store'
+import { getCertificates } from 'store/certificate.reducer'
 import { useAccount } from 'providers'
 import configs from 'configs'
 
@@ -9,47 +11,25 @@ const {
   sol: { printerAddress },
 } = configs
 
-// Watch id
-let watchId = 0
-// let prevLamports: BigInt | undefined = undefined
-
 const CertificateWatcher = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const { accounts } = useAccount()
+  const {
+    wallet: { address: walletAddress },
+  } = useSelector((state: AppState) => state)
 
-  const fetchData = useCallback(() => {}, [])
-
-  const getCertAddress = useCallback(async () => {
-    const { kylan } = window.kylan
-    if (!kylan || !accounts) return
+  const fetchData = useCallback(async () => {
     try {
-      const listMints = Object.values(accounts).map(({ mint }) => mint)
-      const promise = listMints.map((mint) => {
-        return kylan.deriveCertAddress(printerAddress, mint)
-      })
-      const listCertAddress = await Promise.all(promise)
-      // setCertAddress(listCertAddress)
-    } catch (err: any) {
-      window.notify({ type: 'error', description: err.message })
+      if (!account.isAddress(walletAddress)) return
+      await dispatch(getCertificates())
+    } catch (er: any) {
+      window.notify({ type: 'error', description: er.message })
     }
-  }, [accounts])
-
-  useEffect(() => {
-    getCertAddress()
-  }, [getCertAddress])
+  }, [dispatch, walletAddress])
 
   useEffect(() => {
     fetchData()
     // watchData()
     // Unwatch (cancel socket)
-    return () => {
-      ;(async () => {
-        try {
-          await window.kylan.splt.unwatch(watchId)
-        } catch (er) {}
-      })()
-      watchId = 0
-    }
   }, [fetchData])
 
   return <Fragment />

@@ -24,7 +24,6 @@ export const getCertificates = createAsyncThunk(
   `${NAME}/getCertificates`,
   async () => {
     const { kylan } = window.kylan
-    if (!kylan) return
     const { program } = kylan
     // Get all certs
     const value: Array<{ pubkey: PublicKey; account: AccountInfo<Buffer> }> =
@@ -32,10 +31,17 @@ export const getCertificates = createAsyncThunk(
         filters: [{ dataSize: program.account.cert.size }],
       })
     let bulk: CertificateState = {}
-    value.forEach(({ pubkey, account: { data: buf } }) => {
+    console.log(value)
+    value.forEach(({ pubkey, account: { data: buf } }, i) => {
+      console.log(i)
       const address = pubkey.toBase58()
-      const data = kylan.parseCertData(buf)
-      bulk[address] = data
+      try {
+        const data = kylan.parseCertData(buf)
+        console.log(address, data)
+        bulk[address] = data
+      } catch (er) {
+        console.log(er)
+      }
     })
     return bulk
   },
@@ -47,7 +53,6 @@ export const getCertificate = createAsyncThunk<
   { state: any }
 >(`${NAME}/getCertificate`, async ({ address }, { getState }) => {
   const { kylan } = window.kylan
-  if (!kylan) throw Error('Wallet is not connected')
   if (!account.isAddress(address)) throw new Error('Invalid account address')
   const {
     certificates: { [address]: data },
