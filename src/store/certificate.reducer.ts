@@ -3,6 +3,12 @@ import { CertData } from '@project-kylan/core'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { account } from '@senswap/sen-js'
 
+import configs from 'configs'
+
+const {
+  sol: { printerAddress },
+} = configs
+
 /**
  * Interface & Utility
  */
@@ -28,7 +34,10 @@ export const getCertificates = createAsyncThunk(
     // Get all certs
     const value: Array<{ pubkey: PublicKey; account: AccountInfo<Buffer> }> =
       await program.provider.connection.getProgramAccounts(program.programId, {
-        filters: [{ dataSize: program.account.cert.size }],
+        filters: [
+          { dataSize: program.account.cert.size },
+          { memcmp: { bytes: printerAddress, offset: 8 } },
+        ],
       })
     let bulk: CertificateState = {}
     value.forEach(({ pubkey, account: { data: buf } }) => {

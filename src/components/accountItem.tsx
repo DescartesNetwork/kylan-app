@@ -1,26 +1,12 @@
 import { Space, Typography } from 'antd'
 import { MintAvatar, MintSymbol } from 'shared/antd/mint'
 
-import { useAccount } from 'providers'
-
-const AccountItem = ({
-  accountAddr,
-  onClick = () => {},
-}: {
-  accountAddr: string
-  onClick?: (address: string) => void
-}) => {
-  const {
-    accounts: {
-      [accountAddr]: { mint },
-    },
-  } = useAccount()
-
+const AccountItem = ({ mintAddress }: { mintAddress: string }) => {
   return (
-    <Space onClick={() => onClick(mint)}>
-      <MintAvatar mintAddress={mint} size={24} />
+    <Space>
+      <MintAvatar mintAddress={mintAddress} size={24} />
       <Typography.Text className="caption">
-        <MintSymbol mintAddress={mint} />
+        <MintSymbol mintAddress={mintAddress} />
       </Typography.Text>
     </Space>
   )

@@ -1,4 +1,4 @@
-import { Fragment, ReactNode, useState } from 'react'
+import { ReactNode, useState } from 'react'
 import { useSelector } from 'react-redux'
 import CopyToClipboard from 'react-copy-to-clipboard'
 
@@ -9,9 +9,10 @@ import PixelCard from 'components/pixelCard'
 import IonIcon from 'components/ionicon'
 import { MintAvatar, MintSymbol } from 'shared/antd/mint'
 import { AppState } from 'store'
+import useMintDecimals from 'hook/useMintDecimal'
 
 import NumericInput from 'shared/antd/numericInput'
-import { shortenAddress } from 'shared/util'
+import { shortenAddress, rate2Price } from 'shared/util'
 
 const CertCardHeader = ({
   mintAddress,
@@ -29,7 +30,7 @@ const CertCardHeader = ({
         </Space>
       </Col>
       <Col>
-        <Typography.Title level={5}>${price}</Typography.Title>
+        <Typography.Title level={5}>{price} KUSD</Typography.Title>
       </Col>
     </Row>
   )
@@ -95,11 +96,12 @@ const CertificateCard = ({ certAddress }: { certAddress: string }) => {
   const { certificates } = useSelector((state: AppState) => state)
   const certData = certificates[certAddress] || {}
 
-  if (!certData) return <Fragment />
-  const price = certData.price.toNumber() / Math.pow(10, 6)
-  const secureAddress = certData.secureToken.toBase58()
-  const fee = certData.fee.toNumber() / Math.pow(10, 6)
+  const secureAddress = certData?.secureToken.toBase58()
+  const secureDecimal = useMintDecimals(secureAddress) || 0
+  const price = rate2Price(certData.rate, secureDecimal)
+  const fee = certData?.fee.toNumber() / Math.pow(10, 6)
   const taxman = certData?.taxman.toBase58()
+  // const defaultStatus = Object.keys(certData.state as Object)[0]
 
   return (
     <Col xs={24} md={12} lg={8}>
@@ -117,9 +119,6 @@ const CertificateCard = ({ certAddress }: { certAddress: string }) => {
                 />
               </Col>
               <Col span={24}>
-                <RowContent label={'KUSD pirce'} value={price} />
-              </Col>
-              <Col span={24}>
                 <RowContent
                   label={'Fee'}
                   value={<NumericInput value={fee} />}
@@ -127,7 +126,7 @@ const CertificateCard = ({ certAddress }: { certAddress: string }) => {
               </Col>
               <Col span={24}>
                 <RowContent
-                  label={'Tax man'}
+                  label={'Taxman'}
                   value={<NumericInput value={taxman} />}
                 />
               </Col>

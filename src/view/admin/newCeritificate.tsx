@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { account, AccountData } from '@senswap/sen-js'
 import { BN } from '@project-serum/anchor'
 
@@ -11,10 +11,13 @@ import Search from 'components/search'
 import NumericInput from 'shared/antd/numericInput'
 import PixelButton from 'components/pixelButton'
 
-import { AppState } from 'store'
+import useMintDecimals from 'hook/useMintDecimal'
+import { useAccount } from 'providers'
+import { AppDispatch, AppState } from 'store'
 import configs from 'configs'
 import { useMint } from 'providers'
-import { solExplorer } from 'shared/util'
+import { explorer, price2Rate } from 'shared/util'
+import { getCertificate } from 'store/certificate.reducer'
 import kylanIcon from 'static/images/logo/logo-mobile.svg'
 
 const {
@@ -26,21 +29,23 @@ type NewCertProps = {
   onClose?: () => void
 }
 
-const DECIMAL = Math.pow(10, 6)
-
 const NewCertificate = ({
   visible = false,
   onClose = () => {},
 }: NewCertProps) => {
   const [listAccount, setListAccount] = useState<string[]>([])
-  const [soureAddressSelected, setSoureAddressSelected] = useState('')
+  const [secureAddress, setSecureAddressSelected] = useState('')
   const [price, setPrice] = useState('0')
-  const [fee, setFee] = useState('0')
+  const [fee, setFee] = useState('0.5')
   const [loading, setLoading] = useState(false)
   const { tokenProvider } = useMint()
   const {
     wallet: { address: walletAddress },
   } = useSelector((state: AppState) => state)
+  const { accounts } = useAccount()
+  const dispatch = useDispatch<AppDispatch>()
+
+  const mintDecimal = useMintDecimals(secureAddress) || 0
 
   const onSearch = useCallback(
     async (accounts: Record<string, AccountData>) => {
@@ -52,7 +57,7 @@ const NewCertificate = ({
         const token = await tokenProvider.findByAddress(acc.mint)
         if (token) {
           // check prioritize
-          if (token.symbol === 'SEN') prioritizeAccount.push(addr)
+          if (token.symbol === 'SNTR') prioritizeAccount.push(addr)
           else listAccount.unshift(addr)
           continue
         }
@@ -68,29 +73,33 @@ const NewCertificate = ({
   const onNewCertificate = useCallback(async () => {
     if (
       !account.isAddress(printerAddress) ||
-      !account.isAddress(soureAddressSelected) ||
-      !price
+      !account.isAddress(secureAddress) ||
+      !Number(price) ||
+      !Number(fee)
     )
       return
     setLoading(true)
     try {
       const { splt } = window.kylan
-      const priceBN = new BN(Number(price) * DECIMAL)
+      const rate = price2Rate(Number(price), mintDecimal)
+      console.log(Number(price), rate.toNumber(), mintDecimal)
       const taxmanAddress = await splt.deriveAssociatedAddress(
         walletAddress,
-        soureAddressSelected,
+        secureAddress,
       )
       const { kylan } = window.kylan
-      const { txId } = await kylan.initializeCert(
+      const { txId, certAddress } = await kylan.initializeCert(
         printerAddress,
-        soureAddressSelected,
+        secureAddress,
         taxmanAddress,
-        priceBN,
+        rate,
+        new BN(Number(fee) * 10 ** 6),
       )
+      await dispatch(getCertificate({ address: certAddress }))
       await window.notify({
         type: 'success',
-        description: `Certificate created successfully, Click to view details`,
-        onClick: () => window.open(solExplorer(txId), '_blank'),
+        description: `Successfully add a new certificate. Click to view details`,
+        onClick: () => window.open(explorer(txId), '_blank'),
       })
       onClose()
     } catch (er: any) {
@@ -98,7 +107,7 @@ const NewCertificate = ({
     } finally {
       setLoading(false)
     }
-  }, [onClose, price, soureAddressSelected, walletAddress])
+  }, [onClose, price, fee, secureAddress, walletAddress, mintDecimal, dispatch])
 
   return (
     <Modal
@@ -147,15 +156,16 @@ const NewCertificate = ({
                       <Col span={24}>{menu}</Col>
                     </Row>
                   )}
+                  onChange={setSecureAddressSelected}
                 >
-                  {listAccount.map((accAddr) => (
-                    <Select.Option key={accAddr}>
-                      <AccountItem
-                        accountAddr={accAddr}
-                        onClick={setSoureAddressSelected}
-                      />
-                    </Select.Option>
-                  ))}
+                  {listAccount.map((accAddr) => {
+                    const { mint: mintAddress } = accounts[accAddr] || {}
+                    return (
+                      <Select.Option key={mintAddress}>
+                        <AccountItem mintAddress={mintAddress} />
+                      </Select.Option>
+                    )
+                  })}
                 </Select>
               </Col>
             </Row>
@@ -163,7 +173,7 @@ const NewCertificate = ({
           <Col span={24}>
             <Row gutter={[4, 4]}>
               <Col span={24}>
-                <Typography.Text>Pirce</Typography.Text>
+                <Typography.Text>Price (USD)</Typography.Text>
               </Col>
               <Col span={24}>
                 <Card style={{ borderRadius: 8 }} bodyStyle={{ padding: 2 }}>
@@ -179,7 +189,7 @@ const NewCertificate = ({
           <Col span={24}>
             <Row gutter={[4, 4]}>
               <Col span={24}>
-                <Typography.Text>Fee</Typography.Text>
+                <Typography.Text>Fee (%)</Typography.Text>
               </Col>
               <Col span={24}>
                 <Card style={{ borderRadius: 8 }} bodyStyle={{ padding: 2 }}>

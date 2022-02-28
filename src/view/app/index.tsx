@@ -6,6 +6,7 @@ import Home from 'view/home'
 import Watcher from 'watcher'
 import PrivateRoute from 'components/privateRoute'
 import Admin from 'view/admin'
+import NewPrinter from 'view/newPrinter'
 
 const App = () => {
   return (
@@ -27,6 +28,11 @@ const App = () => {
         <Switch>
           <Route exact path="/home" component={Home} />
           <PrivateRoute exact path="/admin" component={Admin} />
+          <PrivateRoute
+            exact
+            path="/admin/new-printer"
+            component={NewPrinter}
+          />
           <Redirect exact from="*" to="/home" />
         </Switch>
       </Layout>

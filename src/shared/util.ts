@@ -1,20 +1,9 @@
+import { BN } from '@project-serum/anchor'
 import { account, utils } from '@senswap/sen-js'
 import numbro from 'numbro'
 
 import { net } from 'shared/runtime'
 import { DataLoader } from './dataloader'
-
-/**
- * Build a explorer url by context including addresses or transaction ids
- * @param addressOrTxId - Address or TxId
- * @returns
- */
-export const solExplorer = (addressOrTxId: string): string => {
-  if (account.isAddress(addressOrTxId)) {
-    return `https://explorer.solana.com/address/${addressOrTxId}?cluster=${net}`
-  }
-  return `https://explorer.solana.com/tx/${addressOrTxId}?cluster=${net}`
-}
 
 /**
  * Delay by async/await
@@ -93,4 +82,12 @@ export const randomColor = (seed?: string, opacity?: string | number) => {
  */
 export const fetchCGK = async (ticket = '') => {
   return DataLoader.load('fetchCGK' + ticket, () => utils.parseCGK(ticket))
+}
+
+export const rate2Price = (rate: BN, secureTokenDecimals: number) => {
+  return 10 ** (secureTokenDecimals - 12) * rate.toNumber()
+}
+
+export const price2Rate = (price: number, secureTokenDecimals: number) => {
+  return new BN(Math.floor(price * 10 ** (12 - secureTokenDecimals)))
 }

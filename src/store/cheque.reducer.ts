@@ -53,7 +53,7 @@ export const getCheque = createAsyncThunk<
   const { kylan } = window.kylan
   if (!account.isAddress(address)) throw new Error('Invalid account address')
   const {
-    cheuqes: { [address]: data },
+    cheques: { [address]: data },
   } = getState()
   if (data) return { [address]: data }
   const raw = await kylan.getChequeData(address)
