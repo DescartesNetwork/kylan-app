@@ -1,0 +1,90 @@
+import { CertData } from '@project-kylan/core'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { account } from '@senswap/sen-js'
+
+/**
+ * Interface & Utility
+ */
+
+export type CertificateState = Record<string, CertData>
+
+/**
+ * Store constructor
+ */
+
+const NAME = 'certificate'
+const initialState: CertificateState = {}
+
+/**
+ * Actions
+ */
+
+export const getCertificates = createAsyncThunk(
+  `${NAME}/getCertificates`,
+  async ({ bulk }: { bulk: CertData }) => {
+    return bulk
+  },
+)
+
+export const getCertificate = createAsyncThunk<
+  CertificateState,
+  { address: string },
+  { state: any }
+>(`${NAME}/getCertificate`, async ({ address }, { getState }) => {
+  if (!account.isAddress(address)) throw new Error('Invalid account address')
+  const {
+    certificates: { [address]: data },
+  } = getState()
+  if (data) return { [address]: data }
+  const { splt } = window.kylan
+  const raw = await splt.getAccountData(address)
+  return { [address]: raw }
+})
+
+export const upsetCertificate = createAsyncThunk<
+  CertificateState,
+  { address: string; data: CertData },
+  { state: any }
+>(`${NAME}/upsetCertificate`, async ({ address, data }) => {
+  if (!account.isAddress(address)) throw new Error('Invalid address')
+  if (!data) throw new Error('Data is empty')
+  return { [address]: data }
+})
+
+export const deleteCertificate = createAsyncThunk(
+  `${NAME}/deleteAccount`,
+  async ({ address }: { address: string }) => {
+    if (!account.isAddress(address)) throw new Error('Invalid address')
+    return { address }
+  },
+)
+
+/**
+ * Usual procedure
+ */
+
+const slice = createSlice({
+  name: NAME,
+  initialState,
+  reducers: {},
+  extraReducers: (builder) =>
+    void builder
+      .addCase(
+        getCertificates.fulfilled,
+        (state, { payload }) => void Object.assign(state, payload),
+      )
+      .addCase(
+        getCertificate.fulfilled,
+        (state, { payload }) => void Object.assign(state, payload),
+      )
+      .addCase(
+        upsetCertificate.fulfilled,
+        (state, { payload }) => void Object.assign(state, payload),
+      )
+      .addCase(
+        deleteCertificate.fulfilled,
+        (state, { payload }) => void delete state[payload.address],
+      ),
+})
+
+export default slice.reducer

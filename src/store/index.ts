@@ -9,6 +9,7 @@ import pools from './pools.reducer'
 import accounts from './accounts.reducer'
 import mints from './mints.reducer'
 import main from './main.reducer'
+import certificates from './certificate.reducer'
 
 const store = configureStore({
   middleware: (getDefaultMiddleware) =>
@@ -22,6 +23,7 @@ const store = configureStore({
     accounts,
     mints,
     main,
+    certificates,
   },
 })
 export type AppState = ReturnType<typeof store.getState>

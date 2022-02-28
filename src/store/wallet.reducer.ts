@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { account, Lamports, SPLT, Swap, WalletInterface } from '@senswap/sen-js'
+import { Lamports, SPLT, Swap, WalletInterface } from '@senswap/sen-js'
 
 import configs from 'configs'
 
@@ -9,6 +9,7 @@ import configs from 'configs'
 
 export type WalletState = {
   visible: boolean
+  address: string
   lamports: bigint
 }
 
@@ -16,7 +17,7 @@ const initializeWindow = async (wallet: WalletInterface | undefined) => {
   const {
     sol: { node, spltAddress, splataAddress, swapAddress },
   } = configs
-  window.sentre = {
+  window.kylan = {
     wallet,
     lamports: new Lamports(node),
     splt: new SPLT(spltAddress, splataAddress, node),
@@ -25,7 +26,7 @@ const initializeWindow = async (wallet: WalletInterface | undefined) => {
 }
 
 const destroyWindow = async () => {
-  if (window.sentre?.wallet) window.sentre.wallet.disconnect()
+  if (window.kylan?.wallet) window.kylan.wallet.disconnect()
   await initializeWindow(undefined)
 }
 
@@ -36,6 +37,7 @@ const destroyWindow = async () => {
 const NAME = 'wallet'
 const initialState: WalletState = {
   visible: false,
+  address: '',
   lamports: BigInt(0),
 }
 
@@ -51,12 +53,17 @@ export const closeWallet = createAsyncThunk(`${NAME}/closeWallet`, async () => {
   return { visible: false }
 })
 
-export const connectWallet = createAsyncThunk(
-  `${NAME}/connectWallet`,
+export const initializeWindowKylan = createAsyncThunk(
+  `${NAME}/initializeWindowKylan`,
   async ({ wallet, walletAddress }: { wallet: any; walletAddress: string }) => {
-    if (!wallet || !account.isAddress(walletAddress))
-      throw new Error('Invalid wallet instance')
+    if (!wallet) throw new Error('Invalid wallet instance')
     await initializeWindow(wallet)
+    const lamports = await window.kylan.lamports.getLamports(walletAddress)
+    return {
+      address: walletAddress,
+      lamports: BigInt(lamports),
+      visible: false,
+    }
   },
 )
 
@@ -94,7 +101,7 @@ const slice = createSlice({
         (state, { payload }) => void Object.assign(state, payload),
       )
       .addCase(
-        connectWallet.fulfilled,
+        initializeWindowKylan.fulfilled,
         (state, { payload }) => void Object.assign(state, payload),
       )
       .addCase(

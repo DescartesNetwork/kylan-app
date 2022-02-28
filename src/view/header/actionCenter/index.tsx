@@ -23,10 +23,10 @@ const {
 const ActionCenter = () => {
   const {
     main: { mintSelected },
+    wallet: { lamports },
   } = useSelector((state: AppState) => state)
-  const [lamports, setLamports] = useState('0')
   const [kylanBalance, setKylanBalance] = useState(0)
-  const { disconnect, publicKey, provider } = useSolana()
+  const { disconnect, publicKey } = useSolana()
   const walletAddress = publicKey?.toBase58() || ''
   const kylan = useKylan()
 
@@ -44,17 +44,6 @@ const ActionCenter = () => {
       setKylanBalance(0)
     }
   }, [kylan, mintSelected])
-
-  const getLamports = useCallback(async () => {
-    if (!publicKey) return
-    const balance = await provider.connection.getBalance(publicKey)
-    const lamports = utils.undecimalize(BigInt(balance), 9)
-    setLamports(lamports)
-  }, [provider.connection, publicKey])
-
-  useEffect(() => {
-    getLamports()
-  }, [getLamports])
 
   useEffect(() => {
     getKylanBalance()
@@ -90,7 +79,9 @@ const ActionCenter = () => {
         <Button className="wallet-balance">
           <Space>
             <WalletAvatar />
-            <span>${numeric(lamports).format('0,0.[00]a')}</span>
+            <span>
+              ${numeric(utils.undecimalize(lamports, 9)).format('0,0.[00]a')}
+            </span>
             {shortenAddress(walletAddress, 3, '...')}
           </Space>
         </Button>

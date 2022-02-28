@@ -27,7 +27,6 @@ const Certificate = () => {
         return kylan.deriveCertAddress(printerAddress, mint)
       })
       const listCertAddress = await Promise.all(promise)
-      console.log(listCertAddress, listMints, 'sada')
       setCertAddress(listCertAddress)
     } catch (err: any) {
       window.notify({ type: 'error', description: err.message })
@@ -37,8 +36,6 @@ const Certificate = () => {
   useEffect(() => {
     getCertAddress()
   }, [getCertAddress])
-
-  console.log()
 
   return (
     <Row gutter={[24, 24]}>

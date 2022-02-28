@@ -50,7 +50,7 @@ export const getPool = createAsyncThunk<
     pools: { [address]: data },
   } = getState()
   if (data) return { [address]: data }
-  const { swap } = window.sentre
+  const { swap } = window.kylan
   const raw = await swap.getPoolData(address)
   return { [address]: raw }
 })

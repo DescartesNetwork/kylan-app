@@ -12,16 +12,27 @@ import { AppDispatch, AppState } from 'store'
 import configs from 'configs'
 import { solExplorer } from 'shared/util'
 import { setBidAmount } from 'store/bid.reducer'
+import { initializeWindowKylan } from 'store/wallet.reducer'
 
 const {
   sol: { printerAddress },
 } = configs
 
 const ConnectWallet = () => {
+  const dispatch = useDispatch<AppDispatch>()
   const { connect } = useWalletKit()
+  const { wallet, publicKey } = useSolana()
+  const walletAddress = publicKey?.toBase58() || ''
+
+  const onConnectWallet = useCallback(async () => {
+    await connect()
+    if (!wallet || !account.isAddress(walletAddress)) return
+    dispatch(initializeWindowKylan({ wallet, walletAddress }))
+  }, [connect, dispatch, wallet, walletAddress])
+
   return (
     <PixelButton
-      onClick={connect}
+      onClick={onConnectWallet}
       suffix={<IonIcon name="wallet-outline" />}
       block
     >

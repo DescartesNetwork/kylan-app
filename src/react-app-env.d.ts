@@ -9,8 +9,8 @@ type SentreNotification = {
   onClick?: () => void
 }
 interface Window {
-  // Sentre
-  sentre: {
+  // Kylan
+  kylan: {
     wallet?: import('@senswap/sen-js').WalletInterface
     lamports: import('@senswap/sen-js').Lamports
     splt: import('@senswap/sen-js').SPLT

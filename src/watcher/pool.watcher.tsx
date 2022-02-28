@@ -53,7 +53,7 @@ const PoolWatcher = () => {
   // Watch account changes
   const watchData = useCallback(async () => {
     if (watchId) return console.warn('Already watched')
-    const { swap } = window.sentre || {}
+    const { swap } = window.kylan || {}
     const filters = [{ memcmp: { bytes: taxmanAddress, offset: 65 } }]
     watchId = swap?.watch((er: string | null, re: any) => {
       if (er) return console.error(er)
@@ -69,7 +69,7 @@ const PoolWatcher = () => {
     return () => {
       ;(async () => {
         try {
-          await window.sentre.swap.unwatch(watchId)
+          await window.kylan.swap.unwatch(watchId)
         } catch (er) {}
       })()
       watchId = 0
