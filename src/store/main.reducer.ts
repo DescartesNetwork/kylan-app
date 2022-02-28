@@ -7,6 +7,7 @@ import { PayState } from 'constant'
 
 export type MainState = {
   printerType: PayState
+  mintSelected: string
 }
 
 /**
@@ -16,6 +17,7 @@ export type MainState = {
 const NAME = 'main'
 const initialState: MainState = {
   printerType: PayState.Mint,
+  mintSelected: '',
 }
 
 /**
@@ -28,6 +30,12 @@ export const setPrinterType = createAsyncThunk(
     return { printerType }
   },
 )
+export const onSelectedMint = createAsyncThunk(
+  `${NAME}/onSelectedMint`,
+  async (mintSelected: string) => {
+    return { mintSelected }
+  },
+)
 /**
  * Usual procedure
  */
@@ -37,10 +45,15 @@ const slice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) =>
-    void builder.addCase(
-      setPrinterType.fulfilled,
-      (state, { payload }) => void Object.assign(state, payload),
-    ),
+    void builder
+      .addCase(
+        setPrinterType.fulfilled,
+        (state, { payload }) => void Object.assign(state, payload),
+      )
+      .addCase(
+        onSelectedMint.fulfilled,
+        (state, { payload }) => void Object.assign(state, payload),
+      ),
 })
 
 export default slice.reducer

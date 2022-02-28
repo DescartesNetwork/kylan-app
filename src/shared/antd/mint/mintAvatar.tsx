@@ -43,7 +43,8 @@ const MintAvatar = ({
   )
 
   const deriveAvatars = useCallback(async () => {
-    if (!account.isAddress(mintAddress)) return setAvatars(DEFAULT_AVATARS)
+    if (!account.isAddress(mintAddress) || !pools)
+      return setAvatars(DEFAULT_AVATARS)
     // LP mint
     const poolData = Object.values(pools).find(
       ({ mint_lpt }) => mint_lpt === mintAddress,

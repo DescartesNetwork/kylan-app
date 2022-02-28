@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { useSolana } from '@gokiprotocol/walletkit'
-
-import { Row, Col, Tooltip, Typography, Popover, Space } from 'antd'
 import QRCode from 'qrcode.react'
 import CopyToClipboard from 'react-copy-to-clipboard'
+
+import { Row, Col, Tooltip, Typography, Popover, Space } from 'antd'
 import WalletAvatar from './walletAvatar'
 
 import { shortenAddress } from 'shared/util'

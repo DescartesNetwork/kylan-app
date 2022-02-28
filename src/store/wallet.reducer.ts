@@ -57,10 +57,6 @@ export const connectWallet = createAsyncThunk(
     if (!wallet || !account.isAddress(walletAddress))
       throw new Error('Invalid wallet instance')
     await initializeWindow(wallet)
-    console.log('console.log 1')
-    // const address = await wallet.getAddress()
-    const lamports = await window.sentre.lamports.getLamports(walletAddress)
-    return { lamports: BigInt(lamports), visible: false }
   },
 )
 

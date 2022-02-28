@@ -1,5 +1,7 @@
-import { ReactNode, useState } from 'react'
+import { Fragment, ReactNode, useCallback, useEffect, useState } from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'
+import { account } from '@senswap/sen-js'
+import { CertData } from '@project-kylan/core'
 
 import { Col, Row, Select, Space, Tooltip, Typography } from 'antd'
 import PixelButton from 'components/pixelButton'
@@ -7,20 +9,28 @@ import PixelCard from 'components/pixelCard'
 
 import IonIcon from 'components/ionicon'
 import { MintAvatar, MintSymbol } from 'shared/antd/mint'
+
 import NumericInput from 'shared/antd/numericInput'
 import { shortenAddress } from 'shared/util'
+import useKylan from 'hook/useKylan'
 
-const CertCardHeader = () => {
+const CertCardHeader = ({
+  mintAddress,
+  price,
+}: {
+  mintAddress: string
+  price: number
+}) => {
   return (
     <Row>
       <Col flex="auto">
         <Space>
-          <MintAvatar size={24} mintAddress={''} />
-          <MintSymbol mintAddress={''} />
+          <MintAvatar size={24} mintAddress={mintAddress} />
+          <MintSymbol mintAddress={mintAddress} />
         </Space>
       </Col>
       <Col>
-        <Typography.Title level={5}>$1</Typography.Title>
+        <Typography.Title level={5}>${price}</Typography.Title>
       </Col>
     </Row>
   )
@@ -64,9 +74,15 @@ const TokenAddress = ({ address }: { address: string }) => {
   )
 }
 
-const SelectCertStatus = () => {
+const SelectCertStatus = ({
+  status,
+  onChange,
+}: {
+  status: string
+  onChange: (status: string) => void
+}) => {
   return (
-    <Select style={{ minWidth: 163 }}>
+    <Select value={status} onChange={onChange} style={{ minWidth: 163 }}>
       <Select.Option value="active">Active</Select.Option>
       <Select.Option value="print-only">Print only</Select.Option>
       <Select.Option value="burn-only">Burn only</Select.Option>
@@ -75,42 +91,79 @@ const SelectCertStatus = () => {
   )
 }
 
-const CertificateCard = () => {
+const CertificateCard = ({ certAddress }: { certAddress: string }) => {
+  const [certData, setCertData] = useState<CertData>()
+  const [status, setStatus] = useState('')
+  const kylan = useKylan()
+
+  const getCertData = useCallback(async () => {
+    if (!account.isAddress(certAddress) || !kylan) return
+    try {
+      const certData = await kylan.getCertData(certAddress)
+      return setCertData(certData)
+    } catch (err) {
+      // Do notthing
+    }
+  }, [certAddress, kylan])
+
+  useEffect(() => {
+    getCertData()
+  }, [getCertData])
+
+  if (!certData) return <Fragment />
+  const price = certData.price.toNumber() / Math.pow(10, 6)
+  const secureAddress = certData.secureToken.toBase58()
+  const fee = certData.fee.toNumber() / Math.pow(10, 6)
+  const taxman = certData?.taxman.toBase58()
+
   return (
-    <PixelCard>
-      <Row gutter={[24, 24]}>
-        <Col span={24}>
-          <CertCardHeader />
-        </Col>
-        <Col span={24}>
-          <Row gutter={[12, 12]}>
-            <Col span={24}>
-              <RowContent
-                label={'Secure token'}
-                value={<TokenAddress address={'BkLRcJuF54zVsJk'} />}
-              />
-            </Col>
-            <Col span={24}>
-              <RowContent label={'KUSD pirce'} value={'$0.998'} />
-            </Col>
-            <Col span={24}>
-              <RowContent label={'Fee'} value={<NumericInput />} />
-            </Col>
-            <Col span={24}>
-              <RowContent label={'Tax man'} value={<NumericInput />} />
-            </Col>
-            <Col span={24}>
-              <RowContent label={'Status'} value={<SelectCertStatus />} />
-            </Col>
-          </Row>
-        </Col>
-        <Col span={24}>
-          <PixelButton suffix={<IonIcon name="print-outline" />} block>
-            Update
-          </PixelButton>
-        </Col>
-      </Row>
-    </PixelCard>
+    <Col xs={24} md={12} lg={8}>
+      <PixelCard>
+        <Row gutter={[24, 24]}>
+          <Col span={24}>
+            <CertCardHeader mintAddress={secureAddress} price={price} />
+          </Col>
+          <Col span={24}>
+            <Row gutter={[12, 12]}>
+              <Col span={24}>
+                <RowContent
+                  label={'Secure token'}
+                  value={<TokenAddress address={secureAddress} />}
+                />
+              </Col>
+              <Col span={24}>
+                <RowContent label={'KUSD pirce'} value={price} />
+              </Col>
+              <Col span={24}>
+                <RowContent
+                  label={'Fee'}
+                  value={<NumericInput value={fee} />}
+                />
+              </Col>
+              <Col span={24}>
+                <RowContent
+                  label={'Tax man'}
+                  value={<NumericInput value={taxman} />}
+                />
+              </Col>
+              <Col span={24}>
+                <RowContent
+                  label={'Status'}
+                  value={
+                    <SelectCertStatus status={status} onChange={setStatus} />
+                  }
+                />
+              </Col>
+            </Row>
+          </Col>
+          <Col span={24}>
+            <PixelButton suffix={<IonIcon name="print-outline" />} block>
+              Update
+            </PixelButton>
+          </Col>
+        </Row>
+      </PixelCard>
+    </Col>
   )
 }
 

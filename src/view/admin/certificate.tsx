@@ -1,11 +1,44 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { Button, Col, Row, Space, Typography } from 'antd'
 import IonIcon from 'components/ionicon'
 import CertificateCard from './certificateCard'
+import NewCertificate from './newCeritificate'
+
+import useKylan from 'hook/useKylan'
+import configs from 'configs'
+import { useAccount } from 'providers'
+
+const {
+  sol: { printerAddress },
+} = configs
 
 const Certificate = () => {
-  const [listCert, setListCert] = useState([1, 2, 3])
+  const [visible, setVisible] = useState(false)
+  const [certAddress, setCertAddress] = useState<string[]>()
+  const kylan = useKylan()
+  const { accounts } = useAccount()
+
+  const getCertAddress = useCallback(async () => {
+    if (!kylan || !accounts) return
+    try {
+      const listMints = Object.values(accounts).map(({ mint }) => mint)
+      const promise = listMints.map((mint) => {
+        return kylan.deriveCertAddress(printerAddress, mint)
+      })
+      const listCertAddress = await Promise.all(promise)
+      console.log(listCertAddress, listMints, 'sada')
+      setCertAddress(listCertAddress)
+    } catch (err: any) {
+      window.notify({ type: 'error', description: err.message })
+    }
+  }, [accounts, kylan])
+
+  useEffect(() => {
+    getCertAddress()
+  }, [getCertAddress])
+
+  console.log()
 
   return (
     <Row gutter={[24, 24]}>
@@ -17,7 +50,7 @@ const Certificate = () => {
           <Col>
             <Space>
               <Button
-                onClick={() => setListCert([...listCert, listCert.length + 1])}
+                onClick={() => setVisible(true)}
                 icon={<IonIcon name="add-outline" />}
               >
                 Add new
@@ -28,13 +61,12 @@ const Certificate = () => {
       </Col>
       <Col span={24}>
         <Row gutter={[24, 24]}>
-          {listCert.map((cert, idx) => (
-            <Col span={8} key={idx}>
-              <CertificateCard />
-            </Col>
+          {certAddress?.map((certAddr, idx) => (
+            <CertificateCard certAddress={certAddr} key={certAddr + idx} />
           ))}
         </Row>
       </Col>
+      <NewCertificate visible={visible} onClose={() => setVisible(false)} />
     </Row>
   )
 }

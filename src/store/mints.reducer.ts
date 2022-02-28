@@ -1,5 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { account, MintData } from '@senswap/sen-js'
+import schema_1 from '@senswap/sen-js/dist/schema'
+import { useSolana } from '@gokiprotocol/walletkit'
+
+const soproxABI = require('soprox-abi')
 
 /**
  * Interface & Utility
@@ -18,6 +22,13 @@ const initialState: MintsState = {}
  * Actions
  */
 
+const parseMintData = (data: Buffer) => {
+  const layout = new soproxABI.struct(schema_1.MINT_SCHEMA)
+  if (data.length !== layout.space) return null
+  layout.fromBuffer(data)
+  return layout.value
+}
+
 export const getMint = createAsyncThunk<
   MintsState,
   { address: string; force?: boolean },
@@ -30,8 +41,11 @@ export const getMint = createAsyncThunk<
     } = getState()
     if (data) return { [address]: data }
   }
-  const { splt } = window.sentre
-  const raw = await splt.getMintData(address)
+  const { provider } = useSolana()
+  const publicKey = account.fromAddress(address)
+  const { data } = (await provider.connection.getAccountInfo(publicKey)) || {}
+  let raw
+  if (data) raw = parseMintData(data)
   return { [address]: raw }
 })
 

@@ -20,21 +20,21 @@ const initialState: AccountsState = {}
 
 export const getAccounts = createAsyncThunk(
   `${NAME}/getAccounts`,
-  async ({ owner }: { owner: string }) => {
-    if (!account.isAddress(owner))
-      throw new Error('Invalid owner/wallet address')
-    const { splt } = window.sentre
-    const ownerPublicKey = account.fromAddress(owner)
-    const { value } = await splt.connection.getTokenAccountsByOwner(
-      ownerPublicKey,
-      { programId: splt.spltProgramId },
-    )
-    let bulk: AccountsState = {}
-    value.forEach(({ pubkey, account: { data: buf } }) => {
-      const address = pubkey.toBase58()
-      const data = splt.parseAccountData(buf)
-      return (bulk[address] = data)
-    })
+  async ({ bulk }: { bulk: AccountsState }) => {
+    // if (!account.isAddress(owner))
+    //   throw new Error('Invalid owner/wallet address')
+    // const { splt } = window.sentre
+    // const ownerPublicKey = account.fromAddress(owner)
+    // const { value } = await splt.connection.getTokenAccountsByOwner(
+    //   ownerPublicKey,
+    //   { programId: splt.spltProgramId },
+    // )
+    // let bulk: AccountsState = {}
+    // value.forEach(({ pubkey, account: { data: buf } }) => {
+    //   const address = pubkey.toBase58()
+    //   const data = splt.parseAccountData(buf)
+    //   return (bulk[address] = data)
+    // })
     return bulk
   },
 )

@@ -5,6 +5,18 @@ import { net } from 'shared/runtime'
 import { DataLoader } from './dataloader'
 
 /**
+ * Build a explorer url by context including addresses or transaction ids
+ * @param addressOrTxId - Address or TxId
+ * @returns
+ */
+export const solExplorer = (addressOrTxId: string): string => {
+  if (account.isAddress(addressOrTxId)) {
+    return `https://explorer.solana.com/address/${addressOrTxId}?cluster=${net}`
+  }
+  return `https://explorer.solana.com/tx/${addressOrTxId}?cluster=${net}`
+}
+
+/**
  * Delay by async/await
  * @param ms - milisenconds
  * @returns

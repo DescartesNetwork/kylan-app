@@ -34,7 +34,8 @@ const MintSymbol = ({
   )
 
   const deriveSymbols = useCallback(async () => {
-    if (!account.isAddress(mintAddress)) return setSymbol(DEFAULT_SYMBOL)
+    if (!account.isAddress(mintAddress) || !pools)
+      return setSymbol(DEFAULT_SYMBOL)
     // LP mint
     const poolData = Object.values(pools).find(
       ({ mint_lpt }) => mint_lpt === mintAddress,

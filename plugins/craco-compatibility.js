@@ -4,7 +4,7 @@
 const path = require('path')
 const webpack = require('webpack')
 
-const overrideWebpackConfig = ({ context, webpackConfig, pluginOptions }) => {
+const overrideWebpackConfig = ({ context, webpackConfig }) => {
   // Add buffer to Webpack 5 polyfill
   // https://github.com/diegomura/react-pdf/issues/1029
   webpackConfig.plugins.push(
@@ -12,6 +12,12 @@ const overrideWebpackConfig = ({ context, webpackConfig, pluginOptions }) => {
       Buffer: ['buffer', 'Buffer'],
     }),
   )
+  // Add polyfill libraries
+  webpackConfig.resolve.fallback = {
+    // For Ethereum Web3
+    assert: require.resolve('assert/'),
+  }
+
   // Fix unrecognized change / caching problem
   webpackConfig.cache.buildDependencies.config.push(
     path.join(context.paths.appPath, './craco.config.js'),

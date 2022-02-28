@@ -1,7 +1,7 @@
 import { ComponentProps, ElementType, Fragment, useCallback } from 'react'
 import { Route, Redirect } from 'react-router-dom'
-import { useSolana } from '@gokiprotocol/walletkit'
 import { account } from '@senswap/sen-js'
+import { useSolana } from '@gokiprotocol/walletkit'
 
 export type PrivateRouteProps = {
   component: ElementType

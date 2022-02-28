@@ -1,8 +1,9 @@
-import { Card, Col, Image, Row, Space, Typography } from 'antd'
-import { MintAvatar, MintSymbol } from 'shared/antd/mint'
+import { Avatar, Card, Col, Image, Row, Space, Typography } from 'antd'
 import MintSelection from './mintSelection'
-import IconArrow from 'static/images/icon-arrow.svg'
+
 import { useUI } from 'providers'
+import IconArrow from 'static/images/icon-arrow.svg'
+import KylanIcon from 'static/images/logo/logo-mobile.svg'
 
 const Mint = ({ floatRight = false }: { floatRight?: boolean }) => {
   const {
@@ -13,7 +14,7 @@ const Mint = ({ floatRight = false }: { floatRight?: boolean }) => {
   const label = floatRight ? 'Receive' : 'Pay'
 
   return (
-    <Card bordered={false} style={{ textAlign: float }}>
+    <Card bordered={false} style={{ textAlign: float, height: '100%' }}>
       <Space direction="vertical" align={float}>
         <Typography.Text type="secondary">{label}</Typography.Text>
         <MintSelection />
@@ -40,8 +41,8 @@ const Payback = ({
       <Space direction="vertical" align={float}>
         <Typography.Text type="secondary">{label}</Typography.Text>
         <Space style={{ minHeight: 30 }} align="center">
-          <MintAvatar mintAddress={mintAddress} />
-          <MintSymbol mintAddress={mintAddress} />
+          <Avatar src={KylanIcon} size={24} />
+          <Typography.Text>Kylan</Typography.Text>
         </Space>
       </Space>
     </Card>

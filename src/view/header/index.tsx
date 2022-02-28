@@ -5,9 +5,10 @@ import Wallet from './wallet'
 import ActionCenter from './actionCenter'
 import Social from './social'
 
+import { useUI } from 'providers'
+
 import Logo from 'static/images/logo/logo.svg'
 import MobileLogo from 'static/images/logo/logo-mobile.svg'
-import { useUI } from 'providers'
 
 const Header = () => {
   const { connected } = useSolana()

@@ -1,11 +1,5 @@
-import { AccountInfo, PublicKey } from '@solana/web3.js'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { account, PoolData } from '@senswap/sen-js'
-import configs from 'configs'
-
-const {
-  sol: { taxmanAddress },
-} = configs
 
 /**
  * Interface & Utility
@@ -24,24 +18,27 @@ const initialState: PoolsState = {}
  * Actions
  */
 
-export const getPools = createAsyncThunk(`${NAME}/getPools`, async () => {
-  const { swap } = window.sentre
-  // Get all pools
-  const value: Array<{ pubkey: PublicKey; account: AccountInfo<Buffer> }> =
-    await swap.connection.getProgramAccounts(swap.swapProgramId, {
-      filters: [
-        { dataSize: 257 },
-        { memcmp: { bytes: taxmanAddress, offset: 65 } },
-      ],
-    })
-  let bulk: PoolsState = {}
-  value.forEach(({ pubkey, account: { data: buf } }) => {
-    const address = pubkey.toBase58()
-    const data = swap.parsePoolData(buf)
-    bulk[address] = data
-  })
-  return bulk
-})
+export const getPools = createAsyncThunk(
+  `${NAME}/getPools`,
+  async ({ bulk }: { bulk: PoolsState }) => {
+    // const { swap } = window.sentre
+    // Get all pools
+    // const value: Array<{ pubkey: PublicKey; account: AccountInfo<Buffer> }> =
+    //   await swap.connection.getProgramAccounts(swap.swapProgramId, {
+    //     filters: [
+    //       { dataSize: 257 },
+    //       { memcmp: { bytes: taxmanAddress, offset: 65 } },
+    //     ],
+    //   })
+    // let bulk: PoolsState = {}
+    // value.forEach(({ pubkey, account: { data: buf } }) => {
+    //   const address = pubkey.toBase58()
+    //   const data = swap.parsePoolData(buf)
+    //   bulk[address] = data
+    // })
+    return bulk
+  },
+)
 
 export const getPool = createAsyncThunk<
   PoolsState,
