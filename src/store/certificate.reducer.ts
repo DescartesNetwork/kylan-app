@@ -31,17 +31,10 @@ export const getCertificates = createAsyncThunk(
         filters: [{ dataSize: program.account.cert.size }],
       })
     let bulk: CertificateState = {}
-    console.log(value)
-    value.forEach(({ pubkey, account: { data: buf } }, i) => {
-      console.log(i)
+    value.forEach(({ pubkey, account: { data: buf } }) => {
       const address = pubkey.toBase58()
-      try {
-        const data = kylan.parseCertData(buf)
-        console.log(address, data)
-        bulk[address] = data
-      } catch (er) {
-        console.log(er)
-      }
+      const data = kylan.parseCertData(buf)
+      bulk[address] = data
     })
     return bulk
   },
