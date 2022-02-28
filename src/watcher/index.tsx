@@ -3,6 +3,7 @@ import UIWatcher from './ui.watcher'
 import AccountWatcher from './account.watcher'
 import WalletWatcher from './wallet.watcher'
 import CertificateWatcher from './certificate.watcher'
+import ChequeWatcher from './cheque.watcher'
 
 const Watcher = () => {
   return (
@@ -11,6 +12,7 @@ const Watcher = () => {
       <AccountWatcher />
       <WalletWatcher />
       <CertificateWatcher />
+      <ChequeWatcher />
     </Fragment>
   )
 }

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSolana, useWalletKit } from '@gokiprotocol/walletkit'
 import { account } from '@senswap/sen-js'
@@ -11,6 +11,7 @@ import { AppDispatch, AppState } from 'store'
 import configs from 'configs'
 import { solExplorer } from 'shared/util'
 import { setBidAmount } from 'store/bid.reducer'
+import { Col, Row, Typography } from 'antd'
 
 const {
   sol: { printerAddress },
@@ -33,10 +34,24 @@ const ConnectWallet = () => {
 const MintToken = () => {
   const dispatch = useDispatch<AppDispatch>()
   const [loading, setLoading] = useState(false)
+  const [isExistCheque, setIsExistCheque] = useState(true)
   const {
     main: { mintSelected },
     bid: { bidAmount },
   } = useSelector((state: AppState) => state)
+
+  const onInitCheque = useCallback(async () => {
+    const { kylan } = window.kylan
+    setLoading(true)
+    try {
+      await kylan.initializeCheque(printerAddress, mintSelected)
+      setIsExistCheque(true)
+    } catch (err) {
+      // do notthing
+    } finally {
+      setLoading(false)
+    }
+  }, [mintSelected])
 
   const onDetectToInitCheque = useCallback(async () => {
     const { kylan } = window.kylan
@@ -45,13 +60,10 @@ const MintToken = () => {
         printerAddress,
         mintSelected,
       )
-      const chequeData = await kylan.getChequeData(chequeAddress)
-      if (!chequeData)
-        return await kylan.initializeCheque(printerAddress, mintSelected)
-      // do nothing
+      await kylan.getChequeData(chequeAddress)
+      setIsExistCheque(true)
     } catch (err) {
-      //try to create cheque
-      await kylan.initializeCheque(printerAddress, mintSelected)
+      setIsExistCheque(false)
     }
   }, [mintSelected])
 
@@ -78,14 +90,37 @@ const MintToken = () => {
   }, [bidAmount, dispatch, mintSelected, onDetectToInitCheque])
 
   return (
-    <PixelButton
-      onClick={onMint}
-      suffix={<IonIcon name="wallet-outline" />}
-      loading={loading}
-      block
-    >
-      Mint
-    </PixelButton>
+    <Fragment>
+      {isExistCheque ? (
+        <PixelButton
+          onClick={onMint}
+          suffix={<IonIcon name="wallet-outline" />}
+          loading={loading}
+          block
+        >
+          Mint
+        </PixelButton>
+      ) : (
+        <Row gutter={[8, 8]}>
+          <Col span={24}>
+            <Typography.Text type="secondary" className="caption">
+              <IonIcon name="alert-circle-outline" />
+              Don't have cheque yet. Plesea approve create new one to continue
+            </Typography.Text>
+          </Col>
+          <Col span={24}>
+            <PixelButton
+              onClick={onInitCheque}
+              suffix={<IonIcon name="wallet-outline" />}
+              loading={loading}
+              block
+            >
+              Approve
+            </PixelButton>
+          </Col>
+        </Row>
+      )}
+    </Fragment>
   )
 }
 

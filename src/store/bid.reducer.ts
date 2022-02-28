@@ -14,7 +14,7 @@ export type BidState = {
 
 const NAME = 'bid'
 const initialState: BidState = {
-  bidAmount: '0',
+  bidAmount: '',
 }
 
 /**

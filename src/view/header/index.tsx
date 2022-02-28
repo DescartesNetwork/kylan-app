@@ -1,4 +1,4 @@
-import { useSolana } from '@gokiprotocol/walletkit'
+import { useHistory } from 'react-router-dom'
 
 import { Col, Row, Image } from 'antd'
 import Wallet from './wallet'
@@ -9,9 +9,15 @@ import { useUI } from 'providers'
 
 import Logo from 'static/images/logo/logo.svg'
 import MobileLogo from 'static/images/logo/logo-mobile.svg'
+import { useSelector } from 'react-redux'
+import { AppState } from 'store'
+import { account } from '@senswap/sen-js'
 
 const Header = () => {
-  const { connected } = useSolana()
+  const history = useHistory()
+  const {
+    wallet: { address: walletAddress },
+  } = useSelector((state: AppState) => state)
   const {
     ui: { infix },
   } = useUI()
@@ -21,14 +27,21 @@ const Header = () => {
   return (
     <Row gutter={16} style={{ maxWidth: 1200, margin: 'auto' }}>
       <Col flex="auto">
-        <Image src={logo} preview={false} />
+        <Image
+          src={logo}
+          style={{ cursor: 'pointer' }}
+          onClick={() => history.push('/home')}
+          preview={false}
+        />
       </Col>
       <Col>
         <Row gutter={[24, 24]} justify="end">
           <Col>
             <Social />
           </Col>
-          <Col>{!connected ? <Wallet /> : <ActionCenter />}</Col>
+          <Col>
+            {!account.isAddress(walletAddress) ? <Wallet /> : <ActionCenter />}
+          </Col>
         </Row>
       </Col>
     </Row>

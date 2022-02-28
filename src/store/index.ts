@@ -9,6 +9,7 @@ import accounts from './accounts.reducer'
 import mints from './mints.reducer'
 import main from './main.reducer'
 import certificates from './certificate.reducer'
+import cheques from './cheque.reducer'
 
 const store = configureStore({
   middleware: (getDefaultMiddleware) =>
@@ -22,6 +23,7 @@ const store = configureStore({
     mints,
     main,
     certificates,
+    cheques,
   },
 })
 export type AppState = ReturnType<typeof store.getState>
