@@ -14,7 +14,14 @@ import useMintDecimals from 'hook/useMintDecimal'
 
 import NumericInput from 'shared/antd/numericInput'
 import { numeric, rate2Price } from 'shared/util'
-import { KUSD_DECIMAL } from 'constant'
+import { CERTIFICATE_STATUS, KUSD_DECIMAL } from 'constant'
+
+type CertStatus =
+  | 'uninitialized'
+  | 'active'
+  | 'printOnly'
+  | 'burnOnly'
+  | 'paused'
 
 const CertCardHeader = ({
   mintAddress,
@@ -59,21 +66,21 @@ const SelectCertStatus = ({
   status,
   onChange,
 }: {
-  status: string
-  onChange: (status: string) => void
+  status: CertStatus
+  onChange: (status: CertStatus) => void
 }) => {
   return (
     <Select value={status} onChange={onChange} style={{ minWidth: 163 }}>
       <Select.Option value="active">Active</Select.Option>
-      <Select.Option value="print-only">Print only</Select.Option>
-      <Select.Option value="burn-only">Burn only</Select.Option>
-      <Select.Option value="pause">Pause</Select.Option>
+      <Select.Option value="printOnly">Print only</Select.Option>
+      <Select.Option value="burnOnly">Burn only</Select.Option>
+      <Select.Option value="paused">Pause</Select.Option>
     </Select>
   )
 }
 
 const CertificateCard = ({ certAddress }: { certAddress: string }) => {
-  const [status, setStatus] = useState('')
+  const [status, setStatus] = useState<CertStatus>()
   const [fee, setFee] = useState('')
   const [taxman, setTaxman] = useState('')
   const [loading, setLoading] = useState(false)
@@ -92,21 +99,34 @@ const CertificateCard = ({ certAddress }: { certAddress: string }) => {
     try {
       const { kylan } = window.kylan
       const parseFee = Number(fee)
-      if (parseFee !== defaultFee) {
+      if (parseFee && parseFee !== defaultFee) {
         const feeBN = new BN(parseFee * 10 ** KUSD_DECIMAL)
-        const { txId } = await kylan.setCertFee(feeBN, certAddress)
-        console.log(txId)
+        await kylan.setCertFee(feeBN, certAddress)
       }
-      if (taxman && taxman !== defaultTaxman) {
-        const { txId } = await kylan.setCertTaxman(taxman, certAddress)
-        console.log(txId)
+      if (taxman && taxman !== defaultTaxman)
+        await kylan.setCertTaxman(taxman, certAddress)
+      if (status && status !== defaultStatus) {
+        const certStatus = CERTIFICATE_STATUS[status]
+        await kylan.setCertState(certStatus, certAddress)
       }
+      window.notify({
+        type: 'success',
+        description: 'Certificate has been updated.',
+      })
     } catch (err: any) {
       window.notify({ type: 'error', description: err.message })
     } finally {
       setLoading(false)
     }
-  }, [certAddress, defaultFee, defaultTaxman, fee, taxman])
+  }, [
+    certAddress,
+    defaultFee,
+    defaultStatus,
+    defaultTaxman,
+    fee,
+    status,
+    taxman,
+  ])
 
   return (
     <Col xs={24} md={12} lg={8}>
@@ -150,7 +170,7 @@ const CertificateCard = ({ certAddress }: { certAddress: string }) => {
                   label={'Status'}
                   value={
                     <SelectCertStatus
-                      status={status || defaultStatus}
+                      status={status || (defaultStatus as CertStatus)}
                       onChange={setStatus}
                     />
                   }

@@ -6,7 +6,6 @@ import IonIcon from 'components/ionicon'
 import PixelCard from 'components/pixelCard'
 import { MintAvatar, MintSymbol } from 'shared/antd/mint'
 
-import { useAccount } from 'providers'
 import { AppDispatch, AppState } from 'store'
 import { onSelectedMint } from 'store/main.reducer'
 

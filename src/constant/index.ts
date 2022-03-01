@@ -4,10 +4,11 @@ export enum PayState {
 }
 
 export const CERTIFICATE_STATUS = {
-  active: 'active',
-  mint_only: 'mint-only',
-  burn_only: 'burn-only',
-  pause: 'pause',
+  uninitialized: { uninitialized: {} },
+  active: { active: {} },
+  printOnly: { printOnly: {} },
+  burnOnly: { burnOnly: {} },
+  paused: { paused: {} },
 }
 
 export const KUSD_DECIMAL = 6
