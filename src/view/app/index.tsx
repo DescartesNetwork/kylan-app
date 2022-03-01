@@ -16,7 +16,7 @@ const App = () => {
           style={{
             zIndex: 999,
             boxShadow: 'unset',
-            background: 'transparent',
+            background: '#37bcf9',
           }}
           bodyStyle={{ padding: 20 }}
           bordered={false}

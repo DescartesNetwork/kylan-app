@@ -1,7 +1,7 @@
 import { Col, Row } from 'antd'
+import MintAction from '../mintAction'
 import Amount from './amount'
 import Infomations from './infomations'
-import MintAction from './mintAction'
 
 const Pay = () => {
   return (

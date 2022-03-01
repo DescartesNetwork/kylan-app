@@ -30,16 +30,13 @@ const MintInfo = ({ onClick = () => {} }: MintInfoProps) => {
 const MintSelection = () => {
   const dispatch = useDispatch<AppDispatch>()
   const [visible, setVisible] = useState(false)
-  const { accounts } = useAccount() || {}
   const {
     main: { mintSelected },
+    certificates,
   } = useSelector((state: AppState) => state)
-
-  const mints = Object.values(accounts).map(({ mint }) => mint) || {}
-
-  // const onOpenModalSelectMint = () => {
-  //   setVisible(true)
-  // }
+  const supportedMints = Object.values(certificates).map(({ secureToken }) =>
+    secureToken.toBase58(),
+  )
 
   return (
     <Row gutter={[16, 16]}>
@@ -62,7 +59,7 @@ const MintSelection = () => {
             </Col>
             <Col span={24}>
               <Row gutter={[24, 24]}>
-                {mints?.map((mintAddr, idx) => (
+                {supportedMints?.map((mintAddr, idx) => (
                   <Col span={24} key={idx}>
                     <Row
                       style={{ cursor: 'pointer' }}

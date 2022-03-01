@@ -19,6 +19,7 @@ import { useMint } from 'providers'
 import { explorer, price2Rate } from 'shared/util'
 import { getCertificate } from 'store/certificate.reducer'
 import kylanIcon from 'static/images/logo/logo-mobile.svg'
+import { KUSD_DECIMAL } from 'constant'
 
 const {
   sol: { printerAddress },
@@ -93,7 +94,7 @@ const NewCertificate = ({
         secureAddress,
         taxmanAddress,
         rate,
-        new BN(Number(fee) * 10 ** 6),
+        new BN(Number(fee) * 10 ** KUSD_DECIMAL),
       )
       await dispatch(getCertificate({ address: certAddress }))
       await window.notify({

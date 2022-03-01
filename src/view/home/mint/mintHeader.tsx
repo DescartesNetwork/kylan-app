@@ -1,5 +1,8 @@
-import { Avatar, Col, Row, Space, Typography } from 'antd'
-import IonIcon from 'components/ionicon'
+import { Avatar, Col, Row, Space, Typography, Image } from 'antd'
+
+import logoSentre from 'static/images/logo/sentre.svg'
+import logoCoin98 from 'static/images/logo/coin98.svg'
+import iconHandsack from 'static/images/icon-handsack.svg'
 
 const MintHeader = () => {
   return (
@@ -10,9 +13,9 @@ const MintHeader = () => {
       <Col>
         <Space size={8}>
           <Typography.Text>Sentre</Typography.Text>
-          <Avatar size={24} />
-          <IonIcon name="add-outline" />
-          <Avatar size={24} />
+          <Avatar src={logoSentre} size={24} />
+          <Image src={iconHandsack} preview={false} />
+          <Avatar src={logoCoin98} size={24} />
           <Typography.Text>Coin 98</Typography.Text>
         </Space>
       </Col>

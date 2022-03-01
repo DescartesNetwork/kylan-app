@@ -8,6 +8,8 @@ import { PayState } from 'constant'
 export type MainState = {
   printerType: PayState
   mintSelected: string
+  available: number
+  kylanBalance: number
 }
 
 /**
@@ -18,6 +20,8 @@ const NAME = 'main'
 const initialState: MainState = {
   printerType: PayState.Mint,
   mintSelected: '',
+  available: 0,
+  kylanBalance: 0,
 }
 
 /**
@@ -36,6 +40,18 @@ export const onSelectedMint = createAsyncThunk(
     return { mintSelected }
   },
 )
+export const setAvailable = createAsyncThunk(
+  `${NAME}/setAvailable`,
+  async (available: number) => {
+    return { available }
+  },
+)
+export const setKylanBalance = createAsyncThunk(
+  `${NAME}/setKylanBalance`,
+  async (kylanBalance: number) => {
+    return { kylanBalance }
+  },
+)
 /**
  * Usual procedure
  */
@@ -52,6 +68,14 @@ const slice = createSlice({
       )
       .addCase(
         onSelectedMint.fulfilled,
+        (state, { payload }) => void Object.assign(state, payload),
+      )
+      .addCase(
+        setAvailable.fulfilled,
+        (state, { payload }) => void Object.assign(state, payload),
+      )
+      .addCase(
+        setKylanBalance.fulfilled,
         (state, { payload }) => void Object.assign(state, payload),
       ),
 })

@@ -23,13 +23,7 @@ const Mint = ({ floatRight = false }: { floatRight?: boolean }) => {
   )
 }
 
-const Payback = ({
-  mintAddress,
-  floatRight = false,
-}: {
-  mintAddress: string
-  floatRight?: boolean
-}) => {
+const Payback = ({ floatRight = false }: { floatRight?: boolean }) => {
   const {
     ui: { infix },
   } = useUI()
@@ -54,7 +48,7 @@ const CardPayBack = ({ payback = false }: { payback?: boolean }) => {
     return (
       <Row gutter={[4, 4]}>
         <Col xs={24} sm={12}>
-          <Payback mintAddress={''} />
+          <Payback />
         </Col>
         <Col span={0} className="pay-icon">
           <Image src={IconArrow} preview={false} />
@@ -73,7 +67,7 @@ const CardPayBack = ({ payback = false }: { payback?: boolean }) => {
         <Image src={IconArrow} preview={false} />
       </Col>
       <Col xs={24} sm={12}>
-        <Payback mintAddress={''} floatRight />
+        <Payback floatRight />
       </Col>
     </Row>
   )

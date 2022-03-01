@@ -1,10 +1,11 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
-import CopyToClipboard from 'react-copy-to-clipboard'
+import { BN } from '@project-serum/anchor'
 
-import { Col, Row, Select, Space, Tooltip, Typography } from 'antd'
+import { Col, Row, Select, Space, Typography } from 'antd'
 import PixelButton from 'components/pixelButton'
 import PixelCard from 'components/pixelCard'
+import CopyAddress from 'components/copyAddress'
 
 import IonIcon from 'components/ionicon'
 import { MintAvatar, MintSymbol } from 'shared/antd/mint'
@@ -12,14 +13,15 @@ import { AppState } from 'store'
 import useMintDecimals from 'hook/useMintDecimal'
 
 import NumericInput from 'shared/antd/numericInput'
-import { shortenAddress, rate2Price } from 'shared/util'
+import { numeric, rate2Price } from 'shared/util'
+import { KUSD_DECIMAL } from 'constant'
 
 const CertCardHeader = ({
   mintAddress,
   price,
 }: {
   mintAddress: string
-  price: number
+  price: string
 }) => {
   return (
     <Row>
@@ -53,27 +55,6 @@ const RowContent = ({
   )
 }
 
-const TokenAddress = ({ address }: { address: string }) => {
-  const [copied, setCopied] = useState(false)
-
-  const onCopy = async () => {
-    setCopied(true)
-    setTimeout(() => {
-      setCopied(false)
-    }, 1500)
-  }
-  return (
-    <Space>
-      <Typography.Text>{shortenAddress(address)}</Typography.Text>
-      <Tooltip title="Copied" visible={copied}>
-        <CopyToClipboard text={address} onCopy={onCopy}>
-          <IonIcon name="copy-outline" style={{ cursor: 'pointer' }} />
-        </CopyToClipboard>
-      </Tooltip>
-    </Space>
-  )
-}
-
 const SelectCertStatus = ({
   status,
   onChange,
@@ -93,55 +74,97 @@ const SelectCertStatus = ({
 
 const CertificateCard = ({ certAddress }: { certAddress: string }) => {
   const [status, setStatus] = useState('')
+  const [fee, setFee] = useState('')
+  const [taxman, setTaxman] = useState('')
+  const [loading, setLoading] = useState(false)
   const { certificates } = useSelector((state: AppState) => state)
   const certData = certificates[certAddress] || {}
 
   const secureAddress = certData?.secureToken.toBase58()
   const secureDecimal = useMintDecimals(secureAddress) || 0
   const price = rate2Price(certData.rate, secureDecimal)
-  const fee = certData?.fee.toNumber() / Math.pow(10, 6)
-  const taxman = certData?.taxman.toBase58()
-  // const defaultStatus = Object.keys(certData.state as Object)[0]
+  const defaultFee = certData?.fee.toNumber() / Math.pow(10, 6)
+  const defaultTaxman = certData?.taxman.toBase58()
+  const defaultStatus = Object.keys(certData.state as Object)[0]
+
+  const onUpdateCert = useCallback(async () => {
+    setLoading(true)
+    try {
+      const { kylan } = window.kylan
+      const parseFee = Number(fee)
+      if (parseFee !== defaultFee) {
+        const feeBN = new BN(parseFee * 10 ** KUSD_DECIMAL)
+        const { txId } = await kylan.setCertFee(feeBN, certAddress)
+        console.log(txId)
+      }
+      if (taxman && taxman !== defaultTaxman) {
+        const { txId } = await kylan.setCertTaxman(taxman, certAddress)
+        console.log(txId)
+      }
+    } catch (err: any) {
+      window.notify({ type: 'error', description: err.message })
+    } finally {
+      setLoading(false)
+    }
+  }, [certAddress, defaultFee, defaultTaxman, fee, taxman])
 
   return (
     <Col xs={24} md={12} lg={8}>
       <PixelCard>
         <Row gutter={[24, 24]}>
           <Col span={24}>
-            <CertCardHeader mintAddress={secureAddress} price={price} />
+            <CertCardHeader
+              mintAddress={secureAddress}
+              price={numeric(price).format('0,0.[000]a')}
+            />
           </Col>
           <Col span={24}>
             <Row gutter={[12, 12]}>
               <Col span={24}>
                 <RowContent
                   label={'Secure token'}
-                  value={<TokenAddress address={secureAddress} />}
+                  value={<CopyAddress address={secureAddress} />}
                 />
               </Col>
               <Col span={24}>
                 <RowContent
                   label={'Fee'}
-                  value={<NumericInput value={fee} />}
+                  value={
+                    <NumericInput value={fee || defaultFee} onValue={setFee} />
+                  }
                 />
               </Col>
               <Col span={24}>
                 <RowContent
                   label={'Taxman'}
-                  value={<NumericInput value={taxman} />}
+                  value={
+                    <NumericInput
+                      value={taxman || defaultTaxman}
+                      onValue={setTaxman}
+                    />
+                  }
                 />
               </Col>
               <Col span={24}>
                 <RowContent
                   label={'Status'}
                   value={
-                    <SelectCertStatus status={status} onChange={setStatus} />
+                    <SelectCertStatus
+                      status={status || defaultStatus}
+                      onChange={setStatus}
+                    />
                   }
                 />
               </Col>
             </Row>
           </Col>
           <Col span={24}>
-            <PixelButton suffix={<IonIcon name="print-outline" />} block>
+            <PixelButton
+              suffix={<IonIcon name="print-outline" />}
+              onClick={onUpdateCert}
+              loading={loading}
+              block
+            >
               Update
             </PixelButton>
           </Col>

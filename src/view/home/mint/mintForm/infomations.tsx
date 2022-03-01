@@ -1,14 +1,22 @@
-import { ReactNode, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { BN } from '@project-serum/anchor'
+import { account } from '@senswap/sen-js'
 
 import { Col, Row, Space, Typography, Button } from 'antd'
 import IonIcon from 'components/ionicon'
-import { numeric } from 'shared/util'
+import { numeric, rate2Price } from 'shared/util'
 
-import {} from 'store/bid.reducer'
 import { AppState } from 'store'
 import CardPayBack from './cardPayBack'
-import { PayState } from 'constant'
+import { KUSD_DECIMAL, PayState } from 'constant'
+import useMintDecimals from 'hook/useMintDecimal'
+import configs from 'configs'
+import { MintSymbol } from 'shared/antd/mint'
+
+const {
+  sol: { printerAddress },
+} = configs
 
 const RowContent = ({
   label = '',
@@ -28,20 +36,45 @@ const RowContent = ({
     </Row>
   )
 }
-const ExchangeRate = () => {
+const ExchangeRate = ({ rate }: { rate: BN | undefined }) => {
   const [isPayback, setIsPayback] = useState(false)
+  const {
+    main: { mintSelected },
+  } = useSelector((state: AppState) => state)
+  const secureDecimal = useMintDecimals(mintSelected) || 0
 
-  // E.g
-  const { kylan, mint } = useMemo(() => {
-    const rate = 0.98
+  const { kylan, secure } = useMemo(() => {
+    if (!rate) return { kylan: 0, secure: 0 }
     let kylan = 1
-    let mint = kylan * rate
+    let secure = rate2Price(rate, secureDecimal)
     if (isPayback) {
-      mint = 1
-      kylan = mint / 0.98
+      kylan = 1 / secure
+      secure = 1
     }
-    return { kylan, mint }
-  }, [isPayback])
+    return { kylan, secure }
+  }, [isPayback, rate, secureDecimal])
+
+  if (isPayback)
+    return (
+      <Space style={{ fontSize: 16 }}>
+        <Button
+          type="text"
+          shape="circle"
+          icon={<IonIcon name="swap-horizontal-outline" />}
+          onClick={() => setIsPayback(!isPayback)}
+        />
+        <Space>
+          <Typography.Text>
+            {numeric(secure).format('0,0.[0000]a')}
+          </Typography.Text>
+          <MintSymbol mintAddress={mintSelected} />
+        </Space>
+        <Typography.Text>=</Typography.Text>
+        <Typography.Text>
+          {numeric(kylan).format('0,0.[0000]a')} KUSD
+        </Typography.Text>
+      </Space>
+    )
 
   return (
     <Space style={{ fontSize: 16 }}>
@@ -52,23 +85,56 @@ const ExchangeRate = () => {
         onClick={() => setIsPayback(!isPayback)}
       />
       <Typography.Text>
-        {numeric(kylan).format('0,0.[0000]a')} KYLAN
+        {numeric(kylan).format('0,0.[0000]a')} KUSD
       </Typography.Text>
       <Typography.Text>=</Typography.Text>
-      <Typography.Text>
-        {numeric(mint).format('0,0.[0000]a')} USDC
-      </Typography.Text>
+      <Space>
+        <Typography.Text>
+          {numeric(secure).format('0,0.[0000]a')}
+        </Typography.Text>
+        <MintSymbol mintAddress={mintSelected} />
+      </Space>
     </Space>
   )
 }
 
 const Infomations = () => {
+  const [certAddress, setCertAddress] = useState('')
   const {
     bid: { bidAmount },
-    main: { printerType },
+    main: { printerType, mintSelected },
+    certificates,
   } = useSelector((state: AppState) => state)
+  const { fee, rate } = certificates[certAddress] || {}
+  const secureDecimal = useMintDecimals(mintSelected) || 0
 
   const payback = printerType === PayState.Payback
+  const burnFee = `${fee?.toNumber() / 10 ** KUSD_DECIMAL || 0}%`
+  const received = useMemo(() => {
+    if (!rate) return 0
+    const secure = rate2Price(rate, secureDecimal)
+    if (payback) return Number(bidAmount) / secure
+    return Number(bidAmount) * secure
+  }, [bidAmount, payback, rate, secureDecimal])
+
+  const getCertAddress = useCallback(async () => {
+    if (!account.isAddress(mintSelected)) return
+    try {
+      const { kylan } = window.kylan
+      const certAddress = await kylan.deriveCertAddress(
+        printerAddress,
+        mintSelected,
+      )
+
+      setCertAddress(certAddress)
+    } catch (err: any) {
+      window.notify({ type: 'error', description: err.message })
+    }
+  }, [mintSelected])
+
+  useEffect(() => {
+    getCertAddress()
+  }, [getCertAddress])
 
   return (
     <Row gutter={[24, 24]}>
@@ -78,15 +144,32 @@ const Infomations = () => {
       <Col span={24}>
         <Row gutter={[10, 10]}>
           <Col span={24}>
-            <RowContent label="Exchange rate" value={<ExchangeRate />} />
-          </Col>
-          <Col span={24}>
-            <RowContent label="Exchange rate" value="$0" />
+            <RowContent
+              label="Exchange rate"
+              value={<ExchangeRate rate={rate} />}
+            />
           </Col>
           <Col span={24}>
             <RowContent
-              label="Exchange rate"
-              value={numeric(bidAmount).format('0,0.[0000]a')}
+              label="Convention fee"
+              value={payback ? burnFee : '0%'}
+            />
+          </Col>
+          <Col span={24}>
+            <RowContent
+              label="Estimated received"
+              value={
+                <Space>
+                  <Typography.Text>
+                    {numeric(received).format('0,0.[0000]a')}
+                  </Typography.Text>
+                  {!payback ? (
+                    <Typography.Text>KUSD</Typography.Text>
+                  ) : (
+                    <MintSymbol mintAddress={mintSelected} />
+                  )}
+                </Space>
+              }
             />
           </Col>
         </Row>
