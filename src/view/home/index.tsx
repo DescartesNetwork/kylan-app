@@ -8,6 +8,11 @@ import HowItWork from './howItWork'
 import Mint from './mint'
 
 import { AppState } from 'store'
+import configs from 'configs'
+
+const {
+  admin: { adminAddresses },
+} = configs
 
 const Home = () => {
   const history = useHistory()
@@ -21,7 +26,9 @@ const Home = () => {
       location: { search },
     } = history
     const params = new URLSearchParams(search)
-    const redirect = decodeURIComponent(params.get('redirect') || '/home')
+    let redirect = decodeURIComponent(params.get('redirect') || '/home')
+    if (!adminAddresses.includes(walletAddress))
+      redirect = decodeURIComponent('/home')
     if (account.isAddress(walletAddress)) history.push(redirect)
   }, [walletAddress, history])
 

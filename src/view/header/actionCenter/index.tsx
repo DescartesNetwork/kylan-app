@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import { account, utils } from '@senswap/sen-js'
 import { useSolana } from '@gokiprotocol/walletkit'
 
@@ -39,6 +40,7 @@ const ActionCenter = () => {
     main: { mintSelected, kylanBalance },
     wallet: { lamports, address: walletAddress },
   } = useSelector((state: AppState) => state)
+  const history = useHistory()
   const { disconnect } = useSolana()
   const { accounts } = useAccount()
   const secureDecimal = useMintDecimals(mintSelected) || 0
@@ -96,7 +98,10 @@ const ActionCenter = () => {
               <Space
                 size={15}
                 style={{ cursor: 'pointer' }}
-                onClick={onDisconnectWallet}
+                onClick={async () => {
+                  onDisconnectWallet()
+                  history.push('/home')
+                }}
               >
                 <IonIcon className="action-center-icon " name="power-outline" />
                 <Typography.Text>Disconnect</Typography.Text>
