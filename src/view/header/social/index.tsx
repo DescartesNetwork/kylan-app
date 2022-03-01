@@ -7,9 +7,9 @@ import Twitter from 'static/images/social/icon-tw.svg'
 import Medium from 'static/images/social/icon-medium.svg'
 
 const SOCIAL = [
-  { icon: Medium, url: '' },
-  { icon: Telegram, url: '' },
-  { icon: Twitter, url: '' },
+  { icon: Medium, url: 'https://sentre.medium.com' },
+  { icon: Telegram, url: 'https://t.me/Sentre' },
+  { icon: Twitter, url: 'https://twitter.com/SentreProtocol' },
 ]
 
 const MenuSocial = ({ vertical = false }: { vertical?: boolean }) => {
