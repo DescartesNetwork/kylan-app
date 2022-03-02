@@ -77,8 +77,8 @@ const TotalTokenPrinted = () => {
       </Col>
       <Col span={24}>
         <Row gutter={[24, 24]}>
-          {availablePrinters.map((pinter, idx) => (
-            <Col span={8} key={pinter.secureToken.toBase58()}>
+          {availablePrinters.map(({ secureToken, amount }, idx) => (
+            <Col span={8} key={secureToken.toBase58()}>
               <TokenPrintedCard
                 style={{
                   borderRight:
@@ -86,8 +86,8 @@ const TotalTokenPrinted = () => {
                       ? 'solid 1px #D3D3D6'
                       : 'unset',
                 }}
-                secureAddress={pinter.secureToken.toBase58()}
-                amount={pinter.amount}
+                secureAddress={secureToken.toBase58()}
+                amount={amount}
               />
             </Col>
           ))}
