@@ -58,8 +58,8 @@ const TotalTokenPrinted = () => {
   }, [printer])
 
   const availablePrinters = filterPrinters.slice(startArr, endArr)
-  const disabledLeft = startArr === DEFAULT_START ? true : false
-  const disabledRight = endArr >= filterPrinters.length ? true : false
+  const disabledLeft = startArr === DEFAULT_START
+  const disabledRight = endArr >= filterPrinters.length
 
   return (
     <Row gutter={[28, 28]}>
