@@ -1,6 +1,8 @@
 import { useCallback, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { account } from '@senswap/sen-js'
 
+import { Tooltip } from 'antd'
 import IonIcon from 'components/ionicon'
 import PixelButton from 'components/pixelButton'
 import PrinterAction from './printerAction'
@@ -9,7 +11,6 @@ import { AppDispatch, AppState } from 'store'
 import configs from 'configs'
 import { explorer } from 'shared/util'
 import { getCheque } from 'store/cheque.reducer'
-import { account } from '@senswap/sen-js'
 
 const {
   sol: { printerAddress },
@@ -68,15 +69,19 @@ const PrinterButton = () => {
   if (approved) return <PrinterAction />
 
   return (
-    <PixelButton
-      onClick={onInitCheque}
-      suffix={<IonIcon name="wallet-outline" />}
-      loading={loading}
-      disabled={disabled}
-      block
-    >
-      Approve
-    </PixelButton>
+    <Tooltip title="Signing requirement for the first time printing a token.">
+      <div>
+        <PixelButton
+          onClick={onInitCheque}
+          suffix={<IonIcon name="pencil-outline" />}
+          loading={loading}
+          disabled={disabled}
+          block
+        >
+          Sign for the first time
+        </PixelButton>
+      </div>
+    </Tooltip>
   )
 }
 

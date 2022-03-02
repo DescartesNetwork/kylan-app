@@ -42,7 +42,7 @@ const ActionCenter = () => {
 
   return (
     <Space className="wallet-center">
-      <Tooltip title={totalBalance}>
+      <Tooltip title={`Total: ${totalBalance} KUSD`}>
         <Space className="kylan-balance" size={12}>
           <Avatar size={24} src={logo} />
           <Typography.Text>
@@ -75,7 +75,7 @@ const ActionCenter = () => {
         }
       >
         <Button className="wallet-balance">
-          <Tooltip title={utils.undecimalize(lamports, 9)}>
+          <Tooltip title={`${utils.undecimalize(lamports, 9)} SOL`}>
             <Space>
               <WalletAvatar />
               <span>
