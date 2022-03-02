@@ -26,7 +26,7 @@ const Amount = () => {
     bid: { bidAmount },
     main: { printerType, mintSelected },
   } = useSelector((state: AppState) => state)
-  const chequeBalance = useChequeBalance()
+  const { balance: chequeBalance } = useChequeBalance()
   const accountBalance = useAccountBalance()
 
   const payback = printerType === PayState.Payback

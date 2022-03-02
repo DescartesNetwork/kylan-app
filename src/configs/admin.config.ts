@@ -15,6 +15,7 @@ const conf: Record<Net, Conf> = {
     adminAddresses: [
       'BkLRcJucoTF9GnxQUa94fkqZdoL9LTWCoT5gF54zVsJk',
       '8W6QginLcAydYyMYjxuyKQN56NzeakDE3aRFrAmocS6D',
+      '2vAEiACep3J1N2J6YY9gt4gAbbFEvuVdWgyu8KUkgzgn',
     ],
   },
 
@@ -32,6 +33,7 @@ const conf: Record<Net, Conf> = {
     adminAddresses: [
       'BkLRcJucoTF9GnxQUa94fkqZdoL9LTWCoT5gF54zVsJk',
       '8W6QginLcAydYyMYjxuyKQN56NzeakDE3aRFrAmocS6D',
+      '2vAEiACep3J1N2J6YY9gt4gAbbFEvuVdWgyu8KUkgzgn',
     ],
   },
 }

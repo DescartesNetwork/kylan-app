@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { Col, Modal, Row, Space, Typography } from 'antd'
@@ -8,6 +8,7 @@ import { MintAvatar, MintSymbol } from 'shared/antd/mint'
 
 import { AppDispatch, AppState } from 'store'
 import { onSelectedMint } from 'store/main.reducer'
+import { PayState } from 'constant'
 
 type MintInfoProps = {
   mintAddress?: string
@@ -30,13 +31,27 @@ const MintSelection = () => {
   const dispatch = useDispatch<AppDispatch>()
   const [visible, setVisible] = useState(false)
   const {
-    main: { mintSelected },
+    main: { mintSelected, printerType },
     certificates,
   } = useSelector((state: AppState) => state)
-
-  const supportedMints = Object.values(certificates).map(({ secureToken }) =>
-    secureToken.toBase58(),
+  const burnType = printerType === PayState.Payback
+  const mintType = printerType === PayState.Mint
+  const supportedMints = Object.values(certificates).map(
+    ({ secureToken, state }) => {
+      return { mintAddress: secureToken.toBase58(), state }
+    },
   )
+  const filterMints = useMemo(() => {
+    let condition = ''
+    if (burnType) condition = 'burnOnly'
+    if (mintType) condition = 'printOnly'
+    return supportedMints.filter(({ state }) => {
+      return (
+        Object.keys(state as Object).includes(condition) ||
+        Object.keys(state as Object).includes('active')
+      )
+    })
+  }, [burnType, mintType, supportedMints])
 
   return (
     <Row gutter={[16, 16]}>
@@ -59,22 +74,22 @@ const MintSelection = () => {
             </Col>
             <Col span={24}>
               <Row gutter={[24, 24]}>
-                {supportedMints?.map((mintAddr, idx) => (
+                {filterMints?.map(({ mintAddress }, idx) => (
                   <Col span={24} key={idx}>
                     <Row
                       style={{ cursor: 'pointer' }}
                       onClick={() => {
-                        dispatch(onSelectedMint(mintAddr))
+                        dispatch(onSelectedMint(mintAddress))
                         setVisible(false)
                       }}
                     >
                       <Col flex="auto">
                         <Space>
-                          <MintAvatar mintAddress={mintAddr} />
-                          <MintSymbol mintAddress={mintAddr} />
+                          <MintAvatar mintAddress={mintAddress} />
+                          <MintSymbol mintAddress={mintAddress} />
                         </Space>
                       </Col>
-                      {mintAddr === mintSelected && (
+                      {mintAddress === mintSelected && (
                         <Col>
                           <IonIcon
                             style={{ color: '#00C02A' }}

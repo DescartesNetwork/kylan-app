@@ -8,7 +8,7 @@ const MintHeader = () => {
   return (
     <Row gutter={[16, 16]}>
       <Col flex="auto">
-        <Typography.Text type="secondary">Support by</Typography.Text>
+        <Typography.Text type="secondary">Powered by</Typography.Text>
       </Col>
       <Col>
         <Space size={8}>

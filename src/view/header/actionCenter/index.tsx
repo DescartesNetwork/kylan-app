@@ -33,7 +33,7 @@ const ActionCenter = () => {
   } = useSelector((state: AppState) => state)
   const history = useHistory()
   const { disconnect } = useSolana()
-  const balance = useChequeBalance()
+  const { totalBalance } = useChequeBalance()
 
   const onDisconnectWallet = useCallback(async () => {
     await disconnect()
@@ -42,11 +42,11 @@ const ActionCenter = () => {
 
   return (
     <Space className="wallet-center">
-      <Tooltip title={balance}>
+      <Tooltip title={totalBalance}>
         <Space className="kylan-balance" size={12}>
           <Avatar size={24} src={logo} />
           <Typography.Text>
-            {numeric(balance).format('0,0.[000]a')}
+            {numeric(totalBalance).format('0,0.[000]a')}
           </Typography.Text>
         </Space>
       </Tooltip>
