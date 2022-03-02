@@ -1,4 +1,3 @@
-import { Fragment } from 'react'
 import { render } from 'react-dom'
 import { HashRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
@@ -12,15 +11,16 @@ import { WalletKitProvider } from '@gokiprotocol/walletkit'
 
 import { ConfigProvider } from 'antd'
 import View from 'view/app'
-
+import IonIcon from 'components/ionicon'
 import store from 'store'
 import reportWebVitals from 'reportWebVitals'
 
+import logoKylan from 'static/images/logo/logo-mobile.svg'
 import 'static/styles/index.less'
 
 const APP_CONFIG = {
-  name: 'kylan_app',
-  icon: <Fragment />,
+  name: 'project-kylan',
+  icon: <IonIcon src={logoKylan} />,
 }
 
 render(

@@ -10,33 +10,60 @@ const {
 } = configs
 
 const useChequeBalance = () => {
+  const [totalBalance, setTotalBalance] = useState(0)
   const [balance, setBalance] = useState(0)
   const {
-    main: { mintSelected },
     cheques,
+    main: { mintSelected },
+    certificates,
   } = useSelector((state: AppState) => state)
 
-  const getChequeAmount = useCallback(async () => {
+  const getAmountCheque = useCallback(
+    async (mintAddress: string) => {
+      try {
+        const { kylan } = window.kylan
+        const address = await kylan.deriveChequeAddress(
+          printerAddress,
+          mintAddress,
+        )
+        const { amount } = cheques[address] || {}
+        if (!amount) return 0
+        return amount.toNumber() / 10 ** KUSD_DECIMAL
+      } catch (err) {
+        return 0
+      }
+    },
+    [cheques],
+  )
+
+  const getAmountCheques = useCallback(async () => {
+    if (!cheques) return setTotalBalance(0)
     try {
-      const { kylan } = window.kylan
-      const address = await kylan.deriveChequeAddress(
-        printerAddress,
-        mintSelected,
+      const secureAddresses = Object.values(certificates).map(
+        ({ secureToken }) => secureToken.toBase58(),
       )
-      const { amount } = cheques[address] || {}
-      if (!amount) return setBalance(0)
-      const balance = amount.toNumber() / 10 ** KUSD_DECIMAL
-      setBalance(balance)
+      const promises = secureAddresses.map((addr) => getAmountCheque(addr))
+
+      const listTotal = await Promise.all(promises)
+      const totalBalance = listTotal.reduce((a, b) => a + b, 0)
+      setTotalBalance(totalBalance)
     } catch (err) {
-      setBalance(0)
+      setTotalBalance(0)
     }
-  }, [cheques, mintSelected])
+  }, [certificates, cheques, getAmountCheque])
 
   useEffect(() => {
-    getChequeAmount()
-  }, [getChequeAmount])
+    ;(async () => {
+      const balance = await getAmountCheque(mintSelected)
+      return setBalance(balance)
+    })()
+  }, [getAmountCheque, mintSelected])
 
-  return balance
+  useEffect(() => {
+    getAmountCheques()
+  }, [getAmountCheques])
+
+  return { getAmountCheque, balance, totalBalance }
 }
 
 export default useChequeBalance
