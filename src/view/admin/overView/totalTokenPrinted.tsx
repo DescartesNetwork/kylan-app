@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { BN } from '@project-serum/anchor'
+import { ChequeData } from '@project-kylan/core'
 
 import { Button, Col, Row, Space, Typography } from 'antd'
 import TokenPrintedCard from './TokenPrintedCard'
@@ -9,7 +10,6 @@ import IonIcon from 'components/ionicon'
 import { AppState } from 'store'
 import { KUSD_DECIMAL } from 'constant'
 import { numeric } from 'shared/util'
-import { ChequeData } from '@project-kylan/core'
 
 const DEFAULT_END = 3
 const DEFAULT_START = 0
@@ -47,6 +47,7 @@ const TotalTokenPrinted = () => {
       if (tokenPrinted[secureAddress]) {
         const { amount: oldAmount } = tokenPrinted[secureAddress]
         const newAmount = oldAmount.toNumber() + amount.toNumber()
+
         tokenPrinted[secureAddress] = {
           ...tokenPrinted[secureAddress],
           amount: new BN(newAmount),
