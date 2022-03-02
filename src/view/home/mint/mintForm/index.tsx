@@ -1,20 +1,25 @@
 import { useDispatch } from 'react-redux'
 
-import { Col, Radio, Row } from 'antd'
+import { Col, Radio, RadioChangeEvent, Row } from 'antd'
 import Pay from './pay'
 
 import { PayState } from 'constant'
 import { AppDispatch } from 'store'
-import { setPrinterType } from 'store/main.reducer'
+import { onSelectedMint, setPrinterType } from 'store/main.reducer'
 
 const MintForm = () => {
   const dispatch = useDispatch<AppDispatch>()
+
+  const handleChange = (e: RadioChangeEvent) => {
+    dispatch(setPrinterType(e.target.value))
+    dispatch(onSelectedMint(''))
+  }
 
   return (
     <Row gutter={[24, 24]} justify="center">
       <Col>
         <Radio.Group
-          onChange={(e) => dispatch(setPrinterType(e.target.value))}
+          onChange={handleChange}
           defaultValue={PayState.Mint}
           className="pay-button"
         >
