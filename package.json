@@ -33,6 +33,8 @@
   "scripts": {
     "start": "REACT_APP_ENV=development craco start",
     "build": "REACT_APP_ENV=production craco build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "test": "craco test"
   },
   "eslintConfig": {
