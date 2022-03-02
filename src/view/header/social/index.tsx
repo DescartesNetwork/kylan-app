@@ -17,12 +17,12 @@ const MenuSocial = ({ vertical = false }: { vertical?: boolean }) => {
 
   return (
     <Space direction={directType}>
-      {SOCIAL.map((item, idx) => (
+      {SOCIAL.map(({ icon, url }, idx) => (
         <Button
           type="text"
           shape="circle"
-          icon={<Image src={item.icon} preview={false} />}
-          onClick={() => window.open(item.url, '_blank')}
+          icon={<Image src={icon} preview={false} />}
+          onClick={() => window.open(url, '_blank')}
           key={idx}
         />
       ))}
@@ -39,7 +39,7 @@ const Social = () => {
 
   if (mobileView)
     return (
-      <Popover content={<MenuSocial vertical />}>
+      <Popover placement="bottom" content={<MenuSocial vertical />}>
         <Button
           type="text"
           shape="circle"
