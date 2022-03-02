@@ -47,8 +47,6 @@ const TotalTokenPrinted = () => {
       if (tokenPrinted[secureAddress]) {
         const { amount: oldAmount } = tokenPrinted[secureAddress]
         const newAmount = oldAmount.toNumber() + amount.toNumber()
-        const tmp = new BN(newAmount)
-        console.log(tmp.toNumber())
         tokenPrinted[secureAddress] = {
           ...tokenPrinted[secureAddress],
           amount: new BN(newAmount),
