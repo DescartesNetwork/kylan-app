@@ -30,6 +30,7 @@ const Payback = ({ floatRight = false }: { floatRight?: boolean }) => {
 
   const float = floatRight && infix !== 'xs' ? 'end' : 'start'
   const label = floatRight ? 'Receive' : 'Pay'
+
   return (
     <Card bordered={false} style={{ textAlign: float }}>
       <Space direction="vertical" align={float}>

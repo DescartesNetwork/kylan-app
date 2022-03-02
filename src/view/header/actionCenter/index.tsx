@@ -1,7 +1,7 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { account, utils } from '@senswap/sen-js'
+import { utils } from '@senswap/sen-js'
 import { useSolana } from '@gokiprotocol/walletkit'
 
 import {
@@ -18,71 +18,35 @@ import IonIcon from 'components/ionicon'
 import Network from './network'
 import WalletAvatar from './walletAvatar'
 
-import { useAccount } from 'providers'
-import { setAvailable, setKylanBalance } from 'store/main.reducer'
 import { AppState, AppDispatch } from 'store'
 import { disconnectWallet } from 'store/wallet.reducer'
-import useMintDecimals from 'hook/useMintDecimal'
 import { numeric, shortenAddress } from 'shared/util'
-import configs from 'configs'
-import { KUSD_DECIMAL } from 'constant'
 
 import logo from 'static/images/logo/logo-mobile.svg'
 import './index.less'
-
-const {
-  sol: { printerAddress },
-} = configs
+import useChequeBalance from 'hook/useChequeBalance'
 
 const ActionCenter = () => {
   const dispatch = useDispatch<AppDispatch>()
   const {
-    main: { mintSelected, kylanBalance },
     wallet: { lamports, address: walletAddress },
   } = useSelector((state: AppState) => state)
   const history = useHistory()
   const { disconnect } = useSolana()
-  const { accounts } = useAccount()
-  const secureDecimal = useMintDecimals(mintSelected) || 0
+  const balance = useChequeBalance()
 
   const onDisconnectWallet = useCallback(async () => {
     await disconnect()
     await dispatch(disconnectWallet())
   }, [disconnect, dispatch])
 
-  const getKylanBalance = useCallback(async () => {
-    const { kylan } = window.kylan
-    if (!account.isAddress(mintSelected)) return
-    const { mint: secureAddress, amount } =
-      Object.values(accounts).find(({ mint }) => mint === mintSelected) || {}
-    if (!account.isAddress(secureAddress) || !amount) return
-    const accountBalance = Number(utils.undecimalize(amount, secureDecimal))
-    console.log(amount, accountBalance, 'ss')
-    try {
-      const chequeAddress = await kylan.deriveChequeAddress(
-        printerAddress,
-        secureAddress,
-      )
-      const { amount } = await kylan.getChequeData(chequeAddress)
-      const balance = amount.toNumber() / 10 ** KUSD_DECIMAL
-      dispatch(setKylanBalance(balance))
-      dispatch(setAvailable(accountBalance))
-    } catch (err: any) {
-      setKylanBalance(0)
-    }
-  }, [accounts, dispatch, mintSelected, secureDecimal])
-
-  useEffect(() => {
-    getKylanBalance()
-  }, [getKylanBalance])
-
   return (
     <Space className="wallet-center">
-      <Tooltip title={kylanBalance}>
+      <Tooltip title={balance}>
         <Space className="kylan-balance" size={12}>
           <Avatar size={24} src={logo} />
           <Typography.Text>
-            {numeric(kylanBalance).format('0,0.[000]a')}
+            {numeric(balance).format('0,0.[000]a')}
           </Typography.Text>
         </Space>
       </Tooltip>

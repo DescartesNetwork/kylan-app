@@ -13,6 +13,7 @@ enum GokitNetwork {
 
 const Network = () => {
   const { setNetwork } = useSolana()
+
   const next = net === 'mainnet' ? 'devnet' : 'mainnet'
 
   const onSwitch = useCallback(async () => {

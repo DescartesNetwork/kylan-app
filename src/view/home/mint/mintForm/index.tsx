@@ -9,6 +9,7 @@ import { setPrinterType } from 'store/main.reducer'
 
 const MintForm = () => {
   const dispatch = useDispatch<AppDispatch>()
+
   return (
     <Row gutter={[24, 24]} justify="center">
       <Col>

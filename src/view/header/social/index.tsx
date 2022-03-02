@@ -14,6 +14,7 @@ const SOCIAL = [
 
 const MenuSocial = ({ vertical = false }: { vertical?: boolean }) => {
   const directType = vertical ? 'vertical' : 'horizontal'
+
   return (
     <Space direction={directType}>
       {SOCIAL.map((item, idx) => (
