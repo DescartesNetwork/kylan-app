@@ -10,6 +10,7 @@ import mints from './mints.reducer'
 import main from './main.reducer'
 import certificates from './certificate.reducer'
 import cheques from './cheque.reducer'
+import printer from './printer.reducer'
 
 const store = configureStore({
   middleware: (getDefaultMiddleware) =>
@@ -24,6 +25,7 @@ const store = configureStore({
     main,
     certificates,
     cheques,
+    printer,
   },
 })
 export type AppState = ReturnType<typeof store.getState>

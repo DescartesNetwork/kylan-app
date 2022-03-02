@@ -1,5 +1,6 @@
 import { Row, Col, Typography } from 'antd'
 import PixelCard from 'components/pixelCard'
+import TotalTokenPrinted from './totalTokenPrinted'
 
 const OverView = () => {
   return (
@@ -14,16 +15,7 @@ const OverView = () => {
       </Col>
       <Col xs={24} md={12}>
         <PixelCard>
-          <Row gutter={[24, 24]}>
-            <Col span={24}>
-              <Row>
-                <Col flex="auto">
-                  <Typography.Text>Total token printed</Typography.Text>
-                </Col>
-                <Col>$190.5</Col>
-              </Row>
-            </Col>
-          </Row>
+          <TotalTokenPrinted />
         </PixelCard>
       </Col>
     </Row>
