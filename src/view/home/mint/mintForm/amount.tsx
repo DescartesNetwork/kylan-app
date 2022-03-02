@@ -1,13 +1,16 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { Button, Card, Col, Row, Space, Typography } from 'antd'
+import { Button, Card, Col, Row, Space, Tooltip, Typography } from 'antd'
 import NumericInput from 'shared/antd/numericInput'
 
 import { AppDispatch, AppState } from 'store'
 import { setBidAmount } from 'store/bid.reducer'
 import { PayState } from 'constant'
 import { numeric } from 'shared/util'
+import { MintSymbol } from 'shared/antd/mint'
+import useChequeBalance from 'hook/useChequeBalance'
+import useAccountBalance from 'hook/useAccountBalance'
 
 enum AmountSize {
   large = 'large',
@@ -21,8 +24,14 @@ const Amount = () => {
   const dispatch = useDispatch<AppDispatch>()
   const {
     bid: { bidAmount },
-    main: { available, kylanBalance, printerType },
+    main: { printerType, mintSelected },
   } = useSelector((state: AppState) => state)
+  const chequeBalance = useChequeBalance()
+  const accountBalance = useAccountBalance()
+
+  const payback = printerType === PayState.Payback
+  const maxBalance = payback ? chequeBalance : accountBalance
+  const symbol = payback ? 'KUSD' : <MintSymbol mintAddress={mintSelected} />
 
   const downSizeInput = useCallback(() => {
     if (!bidAmount) return setFont(AmountSize.large)
@@ -35,9 +44,6 @@ const Amount = () => {
   useEffect(() => {
     downSizeInput()
   }, [downSizeInput])
-
-  const payback = printerType === PayState.Payback
-  const maxBalance = payback ? kylanBalance : available
 
   return (
     <Card
@@ -52,12 +58,19 @@ const Amount = () => {
               <Typography.Text type="secondary">Amount</Typography.Text>
             </Col>
             <Col>
-              <Space size={4}>
-                <Typography.Text type="secondary">Available:</Typography.Text>
-                <Typography.Text>
-                  {numeric(maxBalance).format('0,0.[000]a')}
-                </Typography.Text>
-              </Space>
+              <Tooltip title={maxBalance}>
+                <Space size={4}>
+                  <Typography.Text type="secondary">Available:</Typography.Text>
+                  <Space>
+                    <Typography.Text>
+                      {numeric(maxBalance).format('0,0.[000]a')}
+                    </Typography.Text>
+                    <Typography.Text type="secondary" className="caption">
+                      {symbol}
+                    </Typography.Text>
+                  </Space>
+                </Space>
+              </Tooltip>
             </Col>
           </Row>
         </Col>

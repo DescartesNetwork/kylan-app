@@ -83,7 +83,6 @@ const NewCertificate = ({
     try {
       const { splt } = window.kylan
       const rate = price2Rate(Number(price), mintDecimal)
-      console.log(Number(price), rate.toNumber(), mintDecimal)
       const taxmanAddress = await splt.deriveAssociatedAddress(
         walletAddress,
         secureAddress,

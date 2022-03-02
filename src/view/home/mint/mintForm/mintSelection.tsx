@@ -33,6 +33,7 @@ const MintSelection = () => {
     main: { mintSelected },
     certificates,
   } = useSelector((state: AppState) => state)
+
   const supportedMints = Object.values(certificates).map(({ secureToken }) =>
     secureToken.toBase58(),
   )

@@ -9,6 +9,7 @@ import { AppDispatch, AppState } from 'store'
 import configs from 'configs'
 import { explorer } from 'shared/util'
 import { getCheque } from 'store/cheque.reducer'
+import { account } from '@senswap/sen-js'
 
 const {
   sol: { printerAddress },
@@ -23,7 +24,10 @@ const PrinterButton = () => {
     cheques,
   } = useSelector((state: AppState) => state)
 
+  const disabled = !account.isAddress(mintSelected)
+
   const onInitCheque = useCallback(async () => {
+    if (!account.isAddress(mintSelected)) return
     const { kylan } = window.kylan
     setLoading(true)
     try {
@@ -68,6 +72,7 @@ const PrinterButton = () => {
       onClick={onInitCheque}
       suffix={<IonIcon name="wallet-outline" />}
       loading={loading}
+      disabled={disabled}
       block
     >
       Approve

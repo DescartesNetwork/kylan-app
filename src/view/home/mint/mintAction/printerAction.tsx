@@ -11,6 +11,9 @@ import { AppDispatch, AppState } from 'store'
 import { explorer } from 'shared/util'
 import { setBidAmount } from 'store/bid.reducer'
 import { KUSD_DECIMAL, PayState } from 'constant'
+import useAccountBalance from 'hook/useAccountBalance'
+import useChequeBalance from 'hook/useChequeBalance'
+
 import configs from 'configs'
 
 const {
@@ -25,6 +28,13 @@ const PrinterAction = () => {
     bid: { bidAmount },
   } = useSelector((state: AppState) => state)
   const secureDecimals = useMintDecimals(mintSelected) || 0
+  const accountBalance = useAccountBalance()
+  const chequeBalance = useChequeBalance()
+
+  const payback = printerType === PayState.Payback
+  const maxBalance = payback ? chequeBalance : accountBalance
+  const disabled =
+    !account.isAddress(mintSelected) || !Number(bidAmount) || !maxBalance
 
   const onMint = useCallback(async () => {
     if (!account.isAddress(mintSelected) || !Number(bidAmount)) return
@@ -66,12 +76,13 @@ const PrinterAction = () => {
     }
   }, [bidAmount, dispatch, mintSelected])
 
-  if (printerType === PayState.Mint)
+  if (!payback)
     return (
       <PixelButton
         onClick={onMint}
         suffix={<IonIcon name="wallet-outline" />}
         loading={loading}
+        disabled={disabled}
         block
       >
         Mint
@@ -82,6 +93,7 @@ const PrinterAction = () => {
       onClick={onBurn}
       suffix={<IonIcon name="wallet-outline" />}
       loading={loading}
+      disabled={disabled}
       block
     >
       Burn
