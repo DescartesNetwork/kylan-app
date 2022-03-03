@@ -26,7 +26,6 @@ const MintInfo = ({ onClick = () => {} }: MintInfoProps) => {
     </Space>
   )
 }
-
 const MintSelection = () => {
   const dispatch = useDispatch<AppDispatch>()
   const [visible, setVisible] = useState(false)
@@ -56,7 +55,10 @@ const MintSelection = () => {
   return (
     <Row gutter={[16, 16]}>
       <Col span={24}>
-        <MintInfo onClick={() => setVisible(true)} />
+        <Space style={{ cursor: 'pointer' }} onClick={() => setVisible(true)}>
+          <MintInfo />
+          <IonIcon style={{ color: '#7B7B85' }} name="chevron-down-outline" />
+        </Space>
       </Col>
       <Modal
         visible={visible}
