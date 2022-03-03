@@ -37,7 +37,7 @@ const Payback = ({ floatRight = false }: { floatRight?: boolean }) => {
         <Typography.Text type="secondary">{label}</Typography.Text>
         <Space style={{ minHeight: 30 }} align="center">
           <Avatar src={KylanIcon} size={24} />
-          <Typography.Text>Kylan</Typography.Text>
+          <Typography.Text>KUSD</Typography.Text>
         </Space>
       </Space>
     </Card>
