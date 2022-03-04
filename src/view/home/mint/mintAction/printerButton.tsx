@@ -2,7 +2,6 @@ import { useCallback, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { account } from '@senswap/sen-js'
 
-import { Tooltip } from 'antd'
 import IonIcon from 'components/ionicon'
 import PixelButton from 'components/pixelButton'
 import PrinterAction from './printerAction'
