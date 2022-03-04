@@ -69,19 +69,15 @@ const PrinterButton = () => {
   if (approved) return <PrinterAction />
 
   return (
-    <Tooltip title="Signing requirement for the first time printing a token.">
-      <div>
-        <PixelButton
-          onClick={onInitCheque}
-          suffix={<IonIcon name="pencil-outline" />}
-          loading={loading}
-          disabled={disabled}
-          block
-        >
-          Sign for the first time
-        </PixelButton>
-      </div>
-    </Tooltip>
+    <PixelButton
+      onClick={onInitCheque}
+      suffix={<IonIcon name="pencil-outline" />}
+      loading={loading}
+      disabled={disabled}
+      block
+    >
+      Approve for the first time
+    </PixelButton>
   )
 }
 

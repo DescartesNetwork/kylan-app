@@ -1,5 +1,7 @@
 import { Col, Row, Typography, Collapse } from 'antd'
 
+import { HOW_IT_WORK } from './base'
+
 const HowItWork = () => {
   return (
     <Row gutter={[24, 24]}>
@@ -9,13 +11,11 @@ const HowItWork = () => {
 
       <Col span={24}>
         <Row gutter={[12, 12]}>
-          {[1, 2, 3].map((item, idx) => (
-            <Col span={24} key={idx + item}>
+          {HOW_IT_WORK.map(({ title, description }, idx) => (
+            <Col span={24} key={idx}>
               <Collapse className="mint-hiw">
-                <Collapse.Panel header={`Mint ${item}`} key={item + idx}>
-                  <Typography.Text>
-                    Get KYLAN 1:1 with USD on homepage directly.
-                  </Typography.Text>
+                <Collapse.Panel header={title} key={idx}>
+                  <Typography.Text>{description}</Typography.Text>
                 </Collapse.Panel>
               </Collapse>
             </Col>
