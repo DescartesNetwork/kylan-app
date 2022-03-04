@@ -5,14 +5,13 @@ import Pay from './pay'
 
 import { PayState } from 'constant'
 import { AppDispatch } from 'store'
-import { onSelectedMint, setPrinterType } from 'store/main.reducer'
+import { setPrinterType } from 'store/main.reducer'
 
 const MintForm = () => {
   const dispatch = useDispatch<AppDispatch>()
 
   const handleChange = (e: RadioChangeEvent) => {
     dispatch(setPrinterType(e.target.value))
-    dispatch(onSelectedMint(''))
   }
 
   return (
