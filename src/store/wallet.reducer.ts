@@ -6,7 +6,7 @@ import { web3 } from '@project-serum/anchor'
 import configs from 'configs'
 
 const {
-  sol: { node, spltAddress, splataAddress, swapAddress },
+  sol: { node, spltAddress, splataAddress },
 } = configs
 
 const dummyWallet: AnchorWallet = {
