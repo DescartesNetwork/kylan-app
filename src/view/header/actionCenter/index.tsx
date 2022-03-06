@@ -74,20 +74,20 @@ const ActionCenter = () => {
           </Row>
         }
       >
-        <Button className="wallet-balance">
+        <Space className="wallet-balance">
           <Tooltip
             placement="bottom"
             title={`${utils.undecimalize(lamports, 9)} SOL`}
           >
-            <Space>
+            <Space onClick={(e) => e.stopPropagation()}>
               <WalletAvatar />
               <span>
                 ◎ {numeric(utils.undecimalize(lamports, 9)).format('0,0.[00]a')}
               </span>
-              {shortenAddress(walletAddress, 3, '...')}
             </Space>
           </Tooltip>
-        </Button>
+          <Button>{shortenAddress(walletAddress, 3, '...')}</Button>
+        </Space>
       </Popover>
     </Space>
   )

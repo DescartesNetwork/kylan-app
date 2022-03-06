@@ -1,6 +1,6 @@
 import Kylan, { AnchorWallet } from '@project-kylan/core'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { Lamports, SPLT, Swap } from '@senswap/sen-js'
+import { Lamports, SPLT } from '@senswap/sen-js'
 import { web3 } from '@project-serum/anchor'
 
 import configs from 'configs'
@@ -32,7 +32,6 @@ window.kylan = {
   kylan: new Kylan(dummyWallet),
   lamports: new Lamports(node),
   splt: new SPLT(spltAddress, splataAddress, node),
-  swap: new Swap(swapAddress, spltAddress, splataAddress, node),
 }
 
 const initializeWindow = async (wallet: AnchorWallet | undefined) => {
