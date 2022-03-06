@@ -14,11 +14,9 @@ interface Window {
     kylan: import('@project-kylan/core').default
     lamports: import('@senswap/sen-js').Lamports
     splt: import('@senswap/sen-js').SPLT
-    swap: import('@senswap/sen-js').Swap
   }
   // Utility
   notify: ({ type, description, onClick }: SentreNotification) => void
-  goto: (url: string) => VideoFacingModeEnum
 }
 
 // For bigint serialization
