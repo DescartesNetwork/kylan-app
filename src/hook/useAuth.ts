@@ -5,7 +5,6 @@ import { web3 } from '@project-serum/anchor'
 
 import configs from 'configs'
 import { AppState } from 'store'
-import usePrinterData from 'hook/usePrinterData'
 
 const {
   admin: { adminAddresses },
@@ -16,8 +15,8 @@ export const EMPTY_ADDRESS = web3.SystemProgram.programId.toBase58()
 const useAuth = () => {
   const {
     wallet: { address: walletAddress },
+    printer: { authority },
   } = useSelector((state: AppState) => state)
-  const { authority } = usePrinterData()
 
   const authenticated = useMemo(() => {
     if (

@@ -4,9 +4,14 @@ import { account } from '@senswap/sen-js'
 
 import { AppDispatch, AppState } from 'store'
 import { getCheques, upsetCheque } from 'store/cheque.reducer'
+import configs from 'configs'
 
 // Watch id
 let watchId = 0
+
+const {
+  sol: { printerAddress },
+} = configs
 
 const ChequeWatcher = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -29,7 +34,7 @@ const ChequeWatcher = () => {
       return console.warn('Wallet is not connected')
     if (watchId) return console.warn('Already watched')
     const { kylan } = window.kylan
-    const filters = [{ memcmp: { bytes: walletAddress, offset: 80 } }]
+    const filters = [{ memcmp: { bytes: printerAddress, offset: 16 } }]
     watchId = kylan?.watch((er: string | null, re: any) => {
       if (er) return console.error(er)
       const { address, data } = re

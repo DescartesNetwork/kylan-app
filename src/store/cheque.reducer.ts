@@ -2,6 +2,11 @@ import { AccountInfo, PublicKey } from '@solana/web3.js'
 import { ChequeData } from '@project-kylan/core'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { account } from '@senswap/sen-js'
+import configs from 'configs'
+
+const {
+  sol: { printerAddress },
+} = configs
 
 /**
  * Interface & Utility
@@ -20,30 +25,36 @@ const initialState: ChequeState = {}
  * Actions
  */
 
-export const getCheques = createAsyncThunk(`${NAME}/getCheques`, async () => {
-  const { kylan } = window.kylan
-  const { program } = kylan
-  // Get all cheuqes from list mints address
-  const value: Array<{ pubkey: PublicKey; account: AccountInfo<Buffer> }> =
-    await program.provider.connection.getProgramAccounts(program.programId, {
-      filters: [
-        { dataSize: program.account.cheque.size },
-        {
-          memcmp: {
-            bytes: kylan.program.provider.wallet.publicKey.toBase58(),
-            offset: 80,
+export const getCheques = createAsyncThunk(
+  `${NAME}/getCheques`,
+  async (all?: boolean) => {
+    const { kylan } = window.kylan
+    const { program } = kylan
+    const memcmp = {
+      bytes: all
+        ? printerAddress
+        : kylan.program.provider.wallet.publicKey.toBase58(),
+      offset: all ? 16 : 80,
+    }
+    // Get all cheuqes from list mints address
+    const value: Array<{ pubkey: PublicKey; account: AccountInfo<Buffer> }> =
+      await program.provider.connection.getProgramAccounts(program.programId, {
+        filters: [
+          { dataSize: program.account.cheque.size },
+          {
+            memcmp,
           },
-        },
-      ],
+        ],
+      })
+    let bulk: ChequeState = {}
+    value.forEach(({ pubkey, account: { data: buf } }) => {
+      const address = pubkey.toBase58()
+      const data = kylan.parseChequeData(buf)
+      bulk[address] = data
     })
-  let bulk: ChequeState = {}
-  value.forEach(({ pubkey, account: { data: buf } }) => {
-    const address = pubkey.toBase58()
-    const data = kylan.parseChequeData(buf)
-    bulk[address] = data
-  })
-  return bulk
-})
+    return bulk
+  },
+)
 
 export const getCheque = createAsyncThunk<
   ChequeState,
