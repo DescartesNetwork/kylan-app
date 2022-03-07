@@ -1,26 +1,23 @@
 import { ComponentProps, ElementType, useCallback } from 'react'
-import { Route, Redirect } from 'react-router-dom'
-import { account } from '@senswap/sen-js'
-import { useSolana } from '@gokiprotocol/walletkit'
+import { Route, Redirect, useLocation } from 'react-router-dom'
+
+import useAuth from 'hook/useAuth'
 
 export type PrivateRouteProps = {
   component: ElementType
 } & ComponentProps<typeof Route>
 
 const PrivateRoute = ({ component: Component, ...rest }: PrivateRouteProps) => {
-  const { publicKey } = useSolana()
-  const walletAddress = publicKey?.toBase58() || ''
+  const { pathname } = useLocation()
+  const authenticated = useAuth()
 
   const render = useCallback(
     (props) => {
-      const pathname = encodeURIComponent(
-        window.location.href.replace(window.location.origin, ''),
-      )
-      if (!account.isAddress(walletAddress))
-        return <Redirect to={'/home?redirect=' + pathname} />
+      const redirect = encodeURIComponent(pathname)
+      if (!authenticated) return <Redirect to={'/home?redirect=' + redirect} />
       return <Component {...props} />
     },
-    [walletAddress, Component],
+    [Component, pathname, authenticated],
   )
 
   return <Route {...rest} render={render} />
