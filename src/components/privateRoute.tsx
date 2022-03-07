@@ -3,12 +3,6 @@ import { Route, Redirect } from 'react-router-dom'
 import { account } from '@senswap/sen-js'
 import { useSolana } from '@gokiprotocol/walletkit'
 
-import configs from 'configs'
-
-const {
-  admin: { adminAddresses },
-} = configs
-
 export type PrivateRouteProps = {
   component: ElementType
 } & ComponentProps<typeof Route>
@@ -22,10 +16,7 @@ const PrivateRoute = ({ component: Component, ...rest }: PrivateRouteProps) => {
       const pathname = encodeURIComponent(
         window.location.href.replace(window.location.origin, ''),
       )
-      if (
-        !account.isAddress(walletAddress) ||
-        !adminAddresses.includes(walletAddress)
-      )
+      if (!account.isAddress(walletAddress))
         return <Redirect to={'/home?redirect=' + pathname} />
       return <Component {...props} />
     },
