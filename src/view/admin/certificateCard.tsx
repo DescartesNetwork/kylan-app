@@ -164,6 +164,7 @@ const CertificateCard = ({ certAddress }: { certAddress: string }) => {
                   label={'Fee'}
                   value={
                     <NumericInput
+                      style={{ maxWidth: 163 }}
                       value={fee || defaultFee}
                       onValue={setFee}
                       suffix="%"
@@ -176,6 +177,7 @@ const CertificateCard = ({ certAddress }: { certAddress: string }) => {
                   label={'Taxman Authority'}
                   value={
                     <Input
+                      style={{ maxWidth: 163 }}
                       className="field-taxman"
                       placeholder={defaultTaxmanAuth}
                       onChange={(e) => setTaxman(e.target.value)}
