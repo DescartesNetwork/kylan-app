@@ -1,11 +1,11 @@
 import { Fragment, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { account } from '@senswap/sen-js'
 
 import { AppDispatch, AppState } from 'store'
 import { getCertificates, upsetCertificate } from 'store/certificate.reducer'
 
 import configs from 'configs'
+import { isWalletAddress } from 'shared/util'
 
 const {
   sol: { printerAddress },
@@ -22,7 +22,7 @@ const CertificateWatcher = () => {
 
   const fetchData = useCallback(async () => {
     try {
-      if (!account.isAddress(walletAddress)) return
+      if (!isWalletAddress(walletAddress)) return
       await dispatch(getCertificates())
     } catch (er: any) {
       window.notify({ type: 'error', description: er.message })
@@ -31,7 +31,7 @@ const CertificateWatcher = () => {
 
   // Watch cheque changes
   const watchData = useCallback(async () => {
-    if (!account.isAddress(walletAddress))
+    if (!isWalletAddress(walletAddress))
       return console.warn('Wallet is not connected')
     if (watchId) return console.warn('Already watched')
     const { kylan } = window.kylan

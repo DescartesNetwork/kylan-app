@@ -1,9 +1,9 @@
 import { Fragment, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { account } from '@senswap/sen-js'
 
 import { AppDispatch, AppState } from 'store'
 import { getAccounts, upsetAccount } from 'store/accounts.reducer'
+import { isWalletAddress } from 'shared/util'
 
 // Watch id
 let watchId = 0
@@ -18,7 +18,7 @@ const AccountWatcher = () => {
   // First-time fetching
   const fetchData = useCallback(async () => {
     try {
-      if (!account.isAddress(walletAddress)) return
+      if (!isWalletAddress(walletAddress)) return
       await dispatch(getAccounts({ owner: walletAddress })).unwrap()
     } catch (er) {
       return window.notify({
@@ -29,7 +29,7 @@ const AccountWatcher = () => {
   }, [dispatch, walletAddress])
   // Watch account changes
   const watchData = useCallback(async () => {
-    if (!account.isAddress(walletAddress))
+    if (!isWalletAddress(walletAddress))
       return console.warn('Wallet is not connected')
     if (watchId) return console.warn('Already watched')
     const { splt } = window.kylan

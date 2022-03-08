@@ -1,10 +1,10 @@
 import { useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { account } from '@senswap/sen-js'
 import { useSolana } from '@gokiprotocol/walletkit'
 
 import { AppDispatch, AppState } from 'store'
 import { initializeWallet, updateWallet } from 'store/wallet.reducer'
+import { isWalletAddress } from 'shared/util'
 
 // Watch id
 let watchId: any = null
@@ -17,7 +17,7 @@ const WalletWatcher = () => {
   } = useSelector((state: AppState) => state)
 
   const watchData = useCallback(async () => {
-    if (!account.isAddress(walletAddress)) {
+    if (!isWalletAddress(walletAddress)) {
       try {
         await window.kylan.lamports.unwatch(watchId)
       } catch (er) {
