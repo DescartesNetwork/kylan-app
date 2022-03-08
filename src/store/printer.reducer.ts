@@ -25,19 +25,14 @@ const initialState: PrinterState = {}
  * Actions
  */
 
-export const getPrinter = createAsyncThunk(
-  `${NAME}/getPrinterData`,
-  async () => {
-    const { kylan } = window.kylan
-    const { authority, stableToken } = await kylan.getPrinterData(
-      printerAddress,
-    )
-    return {
-      authority: authority.toBase58(),
-      stableToken: stableToken.toBase58(),
-    }
-  },
-)
+export const getPrinter = createAsyncThunk(`${NAME}/getPrinter`, async () => {
+  const { kylan } = window.kylan
+  const { authority, stableToken } = await kylan.getPrinterData(printerAddress)
+  return {
+    authority: authority.toBase58(),
+    stableToken: stableToken.toBase58(),
+  }
+})
 
 /**
  * Usual procedure

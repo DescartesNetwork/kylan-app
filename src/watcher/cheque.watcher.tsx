@@ -31,11 +31,9 @@ const ChequeWatcher = () => {
     if (watchId) return console.warn('Already watched')
     const { kylan } = window.kylan
     const filters = [{ memcmp: filterCheques(role) }]
-    console.log(' filterCheques(role): ', filterCheques(role))
     watchId = kylan?.watch((er: string | null, re: any) => {
       if (er) return console.error(er)
       const { address, data } = re
-      console.log('data: ', data)
       return dispatch(upsetCheque({ address, data }))
     }, filters)
   }, [dispatch, walletAddress, role])
