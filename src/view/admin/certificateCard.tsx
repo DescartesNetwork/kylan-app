@@ -1,5 +1,5 @@
-import { ReactNode, useCallback, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { ReactNode, useCallback, useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { BN } from '@project-serum/anchor'
 
 import { Col, Row, Select, Space, Typography, Input } from 'antd'
@@ -16,6 +16,7 @@ import NumericInput from 'shared/antd/numericInput'
 import { numeric, rate2Price } from 'shared/util'
 import { CERTIFICATE_STATUS, KUSD_DECIMAL } from 'constant'
 import { useAccount } from 'providers'
+import { getAccount } from 'store/accounts.reducer'
 
 type CertStatus =
   | 'uninitialized'
@@ -81,6 +82,7 @@ const SelectCertStatus = ({
 }
 
 const CertificateCard = ({ certAddress }: { certAddress: string }) => {
+  const dispatch = useDispatch()
   const [status, setStatus] = useState<CertStatus>()
   const [fee, setFee] = useState('')
   const [taxman, setTaxman] = useState('')
@@ -131,6 +133,14 @@ const CertificateCard = ({ certAddress }: { certAddress: string }) => {
     taxman,
   ])
 
+  const getAccountData = useCallback(() => {
+    dispatch(getAccount({ address: defaultTaxman }))
+  }, [defaultTaxman, dispatch])
+
+  useEffect(() => {
+    getAccountData()
+  }, [getAccountData])
+
   return (
     <Col xs={24} md={12} lg={8}>
       <PixelCard>
@@ -153,16 +163,21 @@ const CertificateCard = ({ certAddress }: { certAddress: string }) => {
                 <RowContent
                   label={'Fee'}
                   value={
-                    <NumericInput value={fee || defaultFee} onValue={setFee} />
+                    <NumericInput
+                      value={fee || defaultFee}
+                      onValue={setFee}
+                      suffix="%"
+                    />
                   }
                 />
               </Col>
               <Col span={24}>
                 <RowContent
-                  label={'Taxman'}
+                  label={'Taxman Authority'}
                   value={
                     <Input
-                      defaultValue={defaultTaxmanAuth || defaultTaxman}
+                      className="field-taxman"
+                      placeholder={defaultTaxmanAuth}
                       onChange={(e) => setTaxman(e.target.value)}
                     />
                   }
