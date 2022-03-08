@@ -51,7 +51,7 @@ const conf: Record<Net, Conf> = {
     chainId: 101,
     swapAddress: 'SSW7ooZ1EbEognq5GosbygA3uWW1Hq1NsFq6TsftCFV',
     taxmanAddress: '9doo2HZQEmh2NgfT3Yx12M89aoBheycYqH1eaR5gKb3e',
-    printerAddress: 'B45FZEMnvPH1zHkzCKGcQA75PPd47xBbBzFnXpN5Vnn7',
+    printerAddress: '7JVaNFDZ95HW9B3iNSJwRLUosgj15CNnmqunSVjMML2e',
   },
 }
 

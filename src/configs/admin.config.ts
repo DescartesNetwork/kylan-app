@@ -32,7 +32,7 @@ const conf: Record<Net, Conf> = {
   mainnet: {
     adminAddresses: [
       'BkLRcJucoTF9GnxQUa94fkqZdoL9LTWCoT5gF54zVsJk',
-      'Cs6jYywHTAgdvjxn8xG4VkJJH8DXXy7zbtatzMUWoCMG',
+      '8W6QginLcAydYyMYjxuyKQN56NzeakDE3aRFrAmocS6D',
       '2vAEiACep3J1N2J6YY9gt4gAbbFEvuVdWgyu8KUkgzgn',
     ],
   },
