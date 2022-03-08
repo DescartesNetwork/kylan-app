@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { Col, Modal, Row, Space, Typography } from 'antd'
@@ -29,6 +29,7 @@ const MintInfo = ({ onClick = () => {} }: MintInfoProps) => {
 const MintSelection = () => {
   const dispatch = useDispatch<AppDispatch>()
   const [visible, setVisible] = useState(false)
+  const [firstLoading, setFirstLoading] = useState(false)
   const {
     main: { mintSelected, printerType },
     certificates,
@@ -51,6 +52,16 @@ const MintSelection = () => {
       )
     })
   }, [burnType, mintType, supportedMints])
+
+  const onInit = useCallback(() => {
+    if (!filterMints.length || firstLoading) return
+    setFirstLoading(true)
+    return dispatch(onSelectedMint(filterMints[0].mintAddress))
+  }, [dispatch, filterMints, firstLoading])
+
+  useEffect(() => {
+    onInit()
+  }, [onInit])
 
   return (
     <Row gutter={[16, 16]}>
