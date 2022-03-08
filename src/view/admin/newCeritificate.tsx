@@ -81,17 +81,12 @@ const NewCertificate = ({
       return
     setLoading(true)
     try {
-      const { splt } = window.kylan
       const rate = price2Rate(Number(price), mintDecimal)
-      const taxmanAddress = await splt.deriveAssociatedAddress(
-        walletAddress,
-        secureAddress,
-      )
       const { kylan } = window.kylan
       const { txId, certAddress } = await kylan.initializeCert(
         printerAddress,
         secureAddress,
-        taxmanAddress,
+        walletAddress,
         rate,
         new BN(Number(fee) * 10 ** KUSD_DECIMAL),
       )

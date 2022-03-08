@@ -1,9 +1,12 @@
 import { BN } from '@project-serum/anchor'
 import { account, utils } from '@senswap/sen-js'
+import { web3 } from '@project-serum/anchor'
 import numbro from 'numbro'
 
 import { net } from 'shared/runtime'
 import { DataLoader } from './dataloader'
+
+const EMPTY_ADDRESS = web3.SystemProgram.programId.toBase58()
 
 /**
  * Delay by async/await
@@ -68,4 +71,10 @@ export const rate2Price = (rate: BN, secureTokenDecimals: number) => {
 
 export const price2Rate = (price: number, secureTokenDecimals: number) => {
   return new BN(Math.floor(price * 10 ** (12 - secureTokenDecimals)))
+}
+
+export const isWalletAddress = (walletAddress: string) => {
+  if (account.isAddress(walletAddress) && walletAddress !== EMPTY_ADDRESS)
+    return true
+  return false
 }

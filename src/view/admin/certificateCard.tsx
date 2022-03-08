@@ -2,7 +2,7 @@ import { ReactNode, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { BN } from '@project-serum/anchor'
 
-import { Col, Row, Select, Space, Typography } from 'antd'
+import { Col, Row, Select, Space, Typography, Input } from 'antd'
 import PixelButton from 'components/pixelButton'
 import PixelCard from 'components/pixelCard'
 import CopyAddress from 'components/copyAddress'
@@ -15,6 +15,7 @@ import useMintDecimals from 'hook/useMintDecimal'
 import NumericInput from 'shared/antd/numericInput'
 import { numeric, rate2Price } from 'shared/util'
 import { CERTIFICATE_STATUS, KUSD_DECIMAL } from 'constant'
+import { useAccount } from 'providers'
 
 type CertStatus =
   | 'uninitialized'
@@ -86,6 +87,7 @@ const CertificateCard = ({ certAddress }: { certAddress: string }) => {
   const [loading, setLoading] = useState(false)
   const { certificates } = useSelector((state: AppState) => state)
   const certData = certificates[certAddress] || {}
+  const { accounts } = useAccount()
 
   const secureAddress = certData?.secureToken.toBase58()
   const secureDecimal = useMintDecimals(secureAddress) || 0
@@ -93,6 +95,7 @@ const CertificateCard = ({ certAddress }: { certAddress: string }) => {
   const defaultFee = certData?.fee.toNumber() / Math.pow(10, 6)
   const defaultTaxman = certData?.taxman.toBase58()
   const defaultStatus = Object.keys(certData.state as Object)[0]
+  const { owner: defaultTaxmanAuth } = accounts[defaultTaxman] || {}
 
   const onUpdateCert = useCallback(async () => {
     setLoading(true)
@@ -103,7 +106,7 @@ const CertificateCard = ({ certAddress }: { certAddress: string }) => {
         const feeBN = new BN(parseFee * 10 ** KUSD_DECIMAL)
         await kylan.setCertFee(feeBN, certAddress)
       }
-      if (taxman && taxman !== defaultTaxman)
+      if (taxman && taxman !== defaultTaxmanAuth)
         await kylan.setCertTaxman(taxman, certAddress)
       if (status && status !== defaultStatus) {
         const certStatus = CERTIFICATE_STATUS[status]
@@ -122,7 +125,7 @@ const CertificateCard = ({ certAddress }: { certAddress: string }) => {
     certAddress,
     defaultFee,
     defaultStatus,
-    defaultTaxman,
+    defaultTaxmanAuth,
     fee,
     status,
     taxman,
@@ -158,9 +161,9 @@ const CertificateCard = ({ certAddress }: { certAddress: string }) => {
                 <RowContent
                   label={'Taxman'}
                   value={
-                    <NumericInput
-                      value={taxman || defaultTaxman}
-                      onValue={setTaxman}
+                    <Input
+                      defaultValue={defaultTaxmanAuth || defaultTaxman}
+                      onChange={(e) => setTaxman(e.target.value)}
                     />
                   }
                 />
