@@ -29,7 +29,7 @@ export type WalletState = {
 }
 
 window.kylan = {
-  kylan: new Kylan(dummyWallet),
+  kylan: new Kylan(dummyWallet, node),
   lamports: new Lamports(node),
   splt: new SPLT(spltAddress, splataAddress, node),
 }
@@ -37,7 +37,7 @@ window.kylan = {
 const initializeWindow = async (wallet: AnchorWallet | undefined) => {
   window.kylan = {
     ...window.kylan,
-    kylan: new Kylan(wallet || dummyWallet),
+    kylan: new Kylan(wallet || dummyWallet, node),
   }
 }
 
