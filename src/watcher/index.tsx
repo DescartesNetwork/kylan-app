@@ -4,7 +4,6 @@ import AccountWatcher from './account.watcher'
 import WalletWatcher from './wallet.watcher'
 import CertificateWatcher from './certificate.watcher'
 import ChequeWatcher from './cheque.watcher'
-import PrinterWatcher from './printer.watcher'
 
 const Watcher = () => {
   return (
@@ -14,7 +13,6 @@ const Watcher = () => {
       <WalletWatcher />
       <CertificateWatcher />
       <ChequeWatcher />
-      <PrinterWatcher />
     </Fragment>
   )
 }

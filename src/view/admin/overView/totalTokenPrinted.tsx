@@ -15,7 +15,7 @@ const DEFAULT_END = 3
 const DEFAULT_START = 0
 
 const TotalTokenPrinted = () => {
-  const { printer } = useSelector((state: AppState) => state)
+  const { cheques } = useSelector((state: AppState) => state)
   const [startArr, setStartArr] = useState(DEFAULT_START)
   const [endArr, setEndArr] = useState(DEFAULT_END)
 
@@ -31,15 +31,15 @@ const TotalTokenPrinted = () => {
 
   const totalPrinted = useMemo(() => {
     let sum = 0
-    if (printer)
-      Object.values(printer).map(
+    if (cheques)
+      Object.values(cheques).map(
         ({ amount }) => (sum += amount.toNumber() / 10 ** KUSD_DECIMAL),
       )
     return sum
-  }, [printer])
+  }, [cheques])
 
   const filterPrinters = useMemo(() => {
-    const printers = Object.values(printer).map((printerData) => printerData)
+    const printers = Object.values(cheques).map((printerData) => printerData)
     const tokenPrinted: Record<string, ChequeData> = {}
     for (const printer of printers) {
       const { secureToken, amount } = printer
@@ -55,7 +55,7 @@ const TotalTokenPrinted = () => {
       } else tokenPrinted[secureAddress] = printer
     }
     return Object.values(tokenPrinted).map((printerData) => printerData)
-  }, [printer])
+  }, [cheques])
 
   const availablePrinters = filterPrinters.slice(startArr, endArr)
   const disabledLeft = startArr === DEFAULT_START

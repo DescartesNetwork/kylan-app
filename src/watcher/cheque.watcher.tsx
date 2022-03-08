@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { account } from '@senswap/sen-js'
 
 import { AppDispatch, AppState } from 'store'
-import { getCheques, upsetCheque } from 'store/cheque.reducer'
+import { filterCheques, getCheques, upsetCheque } from 'store/cheque.reducer'
 
 // Watch id
 let watchId = 0
@@ -12,6 +12,7 @@ const ChequeWatcher = () => {
   const dispatch = useDispatch<AppDispatch>()
   const {
     wallet: { address: walletAddress },
+    main: { role },
   } = useSelector((state: AppState) => state)
 
   const fetchData = useCallback(async () => {
@@ -29,13 +30,12 @@ const ChequeWatcher = () => {
       return console.warn('Wallet is not connected')
     if (watchId) return console.warn('Already watched')
     const { kylan } = window.kylan
-    const filters = [{ memcmp: { bytes: walletAddress, offset: 80 } }]
     watchId = kylan?.watch((er: string | null, re: any) => {
       if (er) return console.error(er)
       const { address, data } = re
       return dispatch(upsetCheque({ address, data }))
-    }, filters)
-  }, [dispatch, walletAddress])
+    }, filterCheques(role))
+  }, [dispatch, walletAddress, role])
 
   useEffect(() => {
     fetchData()
