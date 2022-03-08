@@ -6,14 +6,15 @@ import Certificate from './certificate'
 import OverView from './overView'
 
 import { getCheques } from 'store/cheque.reducer'
-import { getPrinterData } from 'store/printer.reducer'
+import { updateRole } from 'store/main.reducer'
+import { Role } from 'constant'
 
 const Admin = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(getCheques(true))
-    dispatch(getPrinterData())
+    dispatch(updateRole(Role.admin))
+    dispatch(getCheques())
   }, [dispatch])
 
   return (

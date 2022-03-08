@@ -27,6 +27,7 @@ const conf: Record<Net, Conf> = {
     swapAddress: '4erFSLP7oBFSVC1t35jdxmbfxEhYCKfoM6XdG2BLR3UF',
     taxmanAddress: '8UaZw2jDhJzv5V53569JbCd3bD4BnyCfBH3sjwgajGS9',
     printerAddress: 'FpsYwMmDKkQ4sjUF2Cpp3imzUo8MZGWVG93eSPmHCR7',
+    //printerAddress: 'FU4eGvLK9tSZGNZvL4qCmjDsb6owxWa3Lshvf2pzKPAV',
   },
 
   /**

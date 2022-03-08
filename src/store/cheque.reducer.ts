@@ -2,6 +2,9 @@ import { AccountInfo, PublicKey } from '@solana/web3.js'
 import { ChequeData } from '@project-kylan/core'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { account } from '@senswap/sen-js'
+
+// import { MEMCMP } from 'constant'
+import { RoleState } from './main.reducer'
 import configs from 'configs'
 
 const {
@@ -25,24 +28,36 @@ const initialState: ChequeState = {}
  * Actions
  */
 
-export const getCheques = createAsyncThunk(
+export const filterCheques = (role: RoleState) => {
+  const MEMCMP = {
+    admin: {
+      bytes: printerAddress,
+      offset: 16,
+    },
+    user: {
+      bytes: window.kylan.kylan.program.provider.wallet.publicKey.toBase58(),
+      offset: 80,
+    },
+  }
+  return MEMCMP[role]
+}
+
+export const getCheques = createAsyncThunk<ChequeState, void, { state: any }>(
   `${NAME}/getCheques`,
-  async (all?: boolean) => {
+  async (_, { getState }) => {
     const { kylan } = window.kylan
     const { program } = kylan
-    const memcmp = {
-      bytes: all
-        ? printerAddress
-        : kylan.program.provider.wallet.publicKey.toBase58(),
-      offset: all ? 16 : 80,
-    }
+    const {
+      main: { role },
+    } = getState()
+
     // Get all cheuqes from list mints address
     const value: Array<{ pubkey: PublicKey; account: AccountInfo<Buffer> }> =
       await program.provider.connection.getProgramAccounts(program.programId, {
         filters: [
           { dataSize: program.account.cheque.size },
           {
-            memcmp,
+            memcmp: filterCheques(role),
           },
         ],
       })

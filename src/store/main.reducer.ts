@@ -1,13 +1,15 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { PayState } from 'constant'
+import { PayState, Role } from 'constant'
 
 /**
  * Interface & Utility
  */
+export type RoleState = 'admin' | 'user'
 
 export type MainState = {
   printerType: PayState
   mintSelected: string
+  role: RoleState
 }
 
 /**
@@ -18,6 +20,7 @@ const NAME = 'main'
 const initialState: MainState = {
   printerType: PayState.Mint,
   mintSelected: '',
+  role: Role.user,
 }
 
 /**
@@ -36,6 +39,12 @@ export const onSelectedMint = createAsyncThunk(
     return { mintSelected }
   },
 )
+export const updateRole = createAsyncThunk(
+  `${NAME}/updateRole`,
+  async (role: string) => {
+    return { role }
+  },
+)
 /**
  * Usual procedure
  */
@@ -52,6 +61,10 @@ const slice = createSlice({
       )
       .addCase(
         onSelectedMint.fulfilled,
+        (state, { payload }) => void Object.assign(state, payload),
+      )
+      .addCase(
+        updateRole.fulfilled,
         (state, { payload }) => void Object.assign(state, payload),
       ),
 })

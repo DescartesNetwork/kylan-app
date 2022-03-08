@@ -25,7 +25,7 @@ const initialState: PrinterState = {}
  * Actions
  */
 
-export const getPrinterData = createAsyncThunk(
+export const getPrinter = createAsyncThunk(
   `${NAME}/getPrinterData`,
   async () => {
     const { kylan } = window.kylan
@@ -49,7 +49,7 @@ const slice = createSlice({
   reducers: {},
   extraReducers: (builder) =>
     void builder.addCase(
-      getPrinterData.fulfilled,
+      getPrinter.fulfilled,
       (state, { payload }) => void Object.assign(state, payload),
     ),
 })

@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { account, utils } from '@senswap/sen-js'
 import { useSolana } from '@gokiprotocol/walletkit'
-import { useLocation } from 'react-router-dom'
 
 import {
   Row,
@@ -31,6 +30,7 @@ import configs from 'configs'
 
 import logo from 'static/images/logo/logo-mobile.svg'
 import './index.less'
+import { Role } from 'constant'
 
 const {
   sol: { printerAddress },
@@ -43,11 +43,14 @@ const ActionCenter = () => {
   const dispatch = useDispatch<AppDispatch>()
   const {
     wallet: { lamports, address: walletAddress },
+    main: { role },
+    printer: { authority },
   } = useSelector((state: AppState) => state)
   const history = useHistory()
   const { disconnect } = useSolana()
   const { totalBalance } = useChequeBalance()
-  const { pathname } = useLocation()
+
+  const transferable = role === Role.admin && authority === walletAddress
 
   const onDisconnectWallet = useCallback(async () => {
     await disconnect()
@@ -69,12 +72,14 @@ const ActionCenter = () => {
           'Transfer new authority successfully. Click to view details.',
         onClick: () => window.open(explorer(txId), '_blank'),
       })
+      return history.push('./home')
     } catch (err: any) {
       window.notify({ type: 'error', description: err.message })
     } finally {
       setLoading(false)
+      setVisible(false)
     }
-  }, [newAuthority])
+  }, [history, newAuthority])
 
   return (
     <Space className="wallet-center">
@@ -107,7 +112,7 @@ const ActionCenter = () => {
                 <Typography.Text>Disconnect</Typography.Text>
               </Space>
             </Col>
-            {pathname === '/admin' ? (
+            {transferable ? (
               <Col span={24}>
                 <Space
                   size={15}
@@ -118,7 +123,7 @@ const ActionCenter = () => {
                     className="action-center-icon "
                     name="git-compare-outline"
                   />
-                  <Typography.Text>Transfer printer Owner</Typography.Text>
+                  <Typography.Text>Transfer Authority</Typography.Text>
                 </Space>
               </Col>
             ) : null}
@@ -152,9 +157,7 @@ const ActionCenter = () => {
         <PixelCard>
           <Row gutter={[24, 24]}>
             <Col span={24}>
-              <Typography.Title level={5}>
-                Transfer Printer Authority
-              </Typography.Title>
+              <Typography.Title level={5}>Transfer Authority</Typography.Title>
             </Col>
             <Col span={24}>
               <Input
