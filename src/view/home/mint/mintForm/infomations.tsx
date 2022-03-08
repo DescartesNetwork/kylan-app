@@ -145,15 +145,12 @@ const Infomations = () => {
         <Row gutter={[10, 10]}>
           <Col span={24}>
             <RowContent
-              label="Exchange rate"
+              label="Convert rate"
               value={<ExchangeRate rate={rate} />}
             />
           </Col>
           <Col span={24}>
-            <RowContent
-              label="Convention fee"
-              value={payback ? burnFee : '0%'}
-            />
+            <RowContent label="Convert fee" value={payback ? burnFee : '0%'} />
           </Col>
           <Col span={24}>
             <RowContent
