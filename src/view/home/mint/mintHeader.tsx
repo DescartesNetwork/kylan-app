@@ -16,7 +16,7 @@ const MintHeader = () => {
           <Avatar src={logoSentre} size={24} />
           <Image src={iconHandsack} preview={false} />
           <Avatar src={logoCoin98} size={24} />
-          <Typography.Text>Coin 98</Typography.Text>
+          <Typography.Text>Coin98</Typography.Text>
         </Space>
       </Col>
     </Row>
