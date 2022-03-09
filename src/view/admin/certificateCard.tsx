@@ -14,7 +14,7 @@ import useMintDecimals from 'hook/useMintDecimal'
 
 import NumericInput from 'shared/antd/numericInput'
 import { numeric, rate2Price } from 'shared/util'
-import { CERTIFICATE_STATUS, KUSD_DECIMAL } from 'constant'
+import { CERTIFICATE_STATUS, PRECISION } from 'constant'
 import { useAccount } from 'providers'
 import { getAccount } from 'store/accounts.reducer'
 
@@ -94,7 +94,7 @@ const CertificateCard = ({ certAddress }: { certAddress: string }) => {
   const secureAddress = certData?.secureToken.toBase58()
   const secureDecimal = useMintDecimals(secureAddress) || 0
   const price = rate2Price(certData.rate, secureDecimal)
-  const defaultFee = certData?.fee.toNumber() / Math.pow(10, 6)
+  const defaultFee = (certData?.fee.toNumber() / PRECISION) * 100
   const defaultTaxman = certData?.taxman.toBase58()
   const defaultStatus = Object.keys(certData.state as Object)[0]
   const { owner: defaultTaxmanAuth } = accounts[defaultTaxman] || {}
@@ -105,7 +105,7 @@ const CertificateCard = ({ certAddress }: { certAddress: string }) => {
       const { kylan } = window.kylan
       const parseFee = Number(fee)
       if (parseFee && parseFee !== defaultFee) {
-        const feeBN = new BN(parseFee * 10 ** KUSD_DECIMAL)
+        const feeBN = new BN(Math.floor((parseFee / 100) * PRECISION))
         await kylan.setCertFee(feeBN, certAddress)
       }
       if (taxman && taxman !== defaultTaxmanAuth)
@@ -118,6 +118,7 @@ const CertificateCard = ({ certAddress }: { certAddress: string }) => {
         type: 'success',
         description: 'Certificate has been updated.',
       })
+      return setFee('')
     } catch (err: any) {
       window.notify({ type: 'error', description: err.message })
     } finally {

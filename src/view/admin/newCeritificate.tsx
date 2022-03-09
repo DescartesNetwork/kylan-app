@@ -19,7 +19,7 @@ import { useMint } from 'providers'
 import { explorer, price2Rate } from 'shared/util'
 import { getCertificate } from 'store/certificate.reducer'
 import kylanIcon from 'static/images/logo/logo-mobile.svg'
-import { KUSD_DECIMAL } from 'constant'
+import { PRECISION } from 'constant'
 
 const {
   sol: { printerAddress },
@@ -88,7 +88,7 @@ const NewCertificate = ({
         secureAddress,
         walletAddress,
         rate,
-        new BN(Number(fee) * 10 ** KUSD_DECIMAL),
+        new BN((Number(fee) / 100) * PRECISION),
       )
       await dispatch(getCertificate({ address: certAddress }))
       await window.notify({

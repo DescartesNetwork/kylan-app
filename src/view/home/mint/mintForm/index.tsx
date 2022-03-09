@@ -26,7 +26,7 @@ const MintForm = () => {
             Mint
           </Radio.Button>
           <Radio.Button style={{ minWidth: 90 }} value={PayState.Payback}>
-            Payback
+            Redeem
           </Radio.Button>
         </Radio.Group>
       </Col>

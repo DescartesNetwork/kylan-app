@@ -13,6 +13,8 @@ export const CERTIFICATE_STATUS = {
 
 export const KUSD_DECIMAL = 6
 
+export const PRECISION = 10 ** 6
+
 export enum Role {
   user = 'user',
   admin = 'admin',

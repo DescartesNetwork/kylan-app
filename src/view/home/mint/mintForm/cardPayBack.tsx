@@ -11,7 +11,7 @@ const Mint = ({ floatRight = false }: { floatRight?: boolean }) => {
   } = useUI()
 
   const float = floatRight && infix !== 'xs' ? 'end' : 'start'
-  const label = floatRight ? 'Receive' : 'Pay'
+  const label = floatRight ? 'Receive' : 'Deposit'
 
   return (
     <Card bordered={false} style={{ textAlign: float, height: '100%' }}>
@@ -29,7 +29,7 @@ const Payback = ({ floatRight = false }: { floatRight?: boolean }) => {
   } = useUI()
 
   const float = floatRight && infix !== 'xs' ? 'end' : 'start'
-  const label = floatRight ? 'Receive' : 'Pay'
+  const label = floatRight ? 'Receive' : 'Redeem'
 
   return (
     <Card bordered={false} style={{ textAlign: float }}>
