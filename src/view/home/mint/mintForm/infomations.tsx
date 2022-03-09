@@ -9,7 +9,7 @@ import { numeric, rate2Price } from 'shared/util'
 
 import { AppState } from 'store'
 import CardPayBack from './cardPayBack'
-import { KUSD_DECIMAL, PayState } from 'constant'
+import { PRECISION, PayState } from 'constant'
 import useMintDecimals from 'hook/useMintDecimal'
 import configs from 'configs'
 import { MintSymbol } from 'shared/antd/mint'
@@ -109,7 +109,7 @@ const Infomations = () => {
   const secureDecimal = useMintDecimals(mintSelected) || 0
 
   const payback = printerType === PayState.Payback
-  const burnFee = `${fee?.toNumber() / 10 ** KUSD_DECIMAL || 0}%`
+  const burnFee = `${(fee?.toNumber() / PRECISION) * 100 || 0}%`
   const received = useMemo(() => {
     if (!rate) return 0
     const secure = rate2Price(rate, secureDecimal)
@@ -150,7 +150,10 @@ const Infomations = () => {
             />
           </Col>
           <Col span={24}>
-            <RowContent label="Convert fee" value={payback ? burnFee : '0%'} />
+            <RowContent
+              label={payback ? 'Redemption fee' : 'Deposit Fee'}
+              value={payback ? burnFee : '0%'}
+            />
           </Col>
           <Col span={24}>
             <RowContent

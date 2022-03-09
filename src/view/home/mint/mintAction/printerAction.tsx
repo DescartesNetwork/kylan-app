@@ -56,7 +56,7 @@ const PrinterAction = () => {
     }
   }, [bidAmount, dispatch, mintSelected, secureDecimals])
 
-  const onBurn = useCallback(async () => {
+  const onRedeem = useCallback(async () => {
     if (!account.isAddress(mintSelected) || !Number(bidAmount)) return
     setLoading(true)
     const amount = new BN(Number(bidAmount) * 10 ** KUSD_DECIMAL)
@@ -65,7 +65,7 @@ const PrinterAction = () => {
       const { txId } = await kylan.burn(amount, mintSelected, printerAddress)
       window.notify({
         type: 'success',
-        description: 'Print KUSD tokens successfully. Click to view details.',
+        description: 'Redeem tokens successfully. Click to view details.',
         onClick: () => window.open(explorer(txId), '_blank'),
       })
       dispatch(setBidAmount(''))
@@ -90,13 +90,13 @@ const PrinterAction = () => {
     )
   return (
     <PixelButton
-      onClick={onBurn}
+      onClick={onRedeem}
       suffix={<IonIcon name="wallet-outline" />}
       loading={loading}
       disabled={disabled}
       block
     >
-      Burn
+      Redeem
     </PixelButton>
   )
 }
