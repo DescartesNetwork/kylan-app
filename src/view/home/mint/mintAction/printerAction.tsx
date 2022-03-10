@@ -29,7 +29,7 @@ const PrinterAction = () => {
   } = useSelector((state: AppState) => state)
   const secureDecimals = useMintDecimals(mintSelected) || 0
   const accountBalance = useAccountBalance()
-  const chequeBalance = useChequeBalance()
+  const { balance: chequeBalance } = useChequeBalance()
 
   const payback = printerType === PayState.Payback
   const maxBalance = payback ? chequeBalance : accountBalance

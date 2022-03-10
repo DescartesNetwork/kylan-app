@@ -7,36 +7,17 @@ import { Button, Col, Row, Space, Typography } from 'antd'
 import TokenPrintedCard from './TokenPrintedCard'
 import IonIcon from 'components/ionicon'
 
+import usePrinterBalance from 'hook/usePrinterBalance'
 import { AppState } from 'store'
-import { KUSD_DECIMAL } from 'constant'
 import { numeric } from 'shared/util'
 
-const DEFAULT_END = 3
-const DEFAULT_START = 0
+const DEFAULT_CURSOR_INDEX = 0
+const CURSOR_OFFSET = 3
 
 const TotalTokenPrinted = () => {
   const { cheques } = useSelector((state: AppState) => state)
-  const [startArr, setStartArr] = useState(DEFAULT_START)
-  const [endArr, setEndArr] = useState(DEFAULT_END)
-
-  const slideRight = () => {
-    setStartArr(startArr + 1)
-    setEndArr(endArr + 1)
-  }
-
-  const slideLeft = () => {
-    setStartArr(startArr - 1)
-    setEndArr(endArr - 1)
-  }
-
-  const totalPrinted = useMemo(() => {
-    let sum = 0
-    if (cheques)
-      Object.values(cheques).map(
-        ({ amount }) => (sum += amount.toNumber() / 10 ** KUSD_DECIMAL),
-      )
-    return sum
-  }, [cheques])
+  const [cursorIndex, setCursorIndex] = useState(DEFAULT_CURSOR_INDEX)
+  const { printerTVL } = usePrinterBalance()
 
   const filterPrinters = useMemo(() => {
     const printers = Object.values(cheques).map((printerData) => printerData)
@@ -57,9 +38,15 @@ const TotalTokenPrinted = () => {
     return Object.values(tokenPrinted).map((printerData) => printerData)
   }, [cheques])
 
-  const availablePrinters = filterPrinters.slice(startArr, endArr)
-  const disabledLeft = startArr === DEFAULT_START
-  const disabledRight = endArr >= filterPrinters.length
+  const slideRight = () => setCursorIndex(cursorIndex + 1)
+  const slideLeft = () => setCursorIndex(cursorIndex - 1)
+
+  const availablePrinters = filterPrinters.slice(
+    cursorIndex,
+    cursorIndex + CURSOR_OFFSET,
+  )
+  const disabledLeft = !cursorIndex
+  const disabledRight = cursorIndex + CURSOR_OFFSET >= filterPrinters.length
 
   return (
     <Row gutter={[28, 28]}>
@@ -70,7 +57,7 @@ const TotalTokenPrinted = () => {
           </Col>
           <Col>
             <Typography.Title level={3}>
-              ${numeric(totalPrinted).format('0,0.[0000]a')}
+              ${numeric(printerTVL).format('0,0.[0000]a')}
             </Typography.Title>
           </Col>
         </Row>
