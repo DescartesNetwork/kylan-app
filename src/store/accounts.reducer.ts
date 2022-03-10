@@ -48,6 +48,7 @@ export const getAccount = createAsyncThunk<
   const {
     accounts: { [address]: data },
   } = getState()
+
   if (data) return { [address]: data }
   const { splt } = window.kylan
   const raw = await splt.getAccountData(address)
