@@ -1,30 +1,27 @@
 {
   "files": {
-    "main.css": "/static/css/main.797b9832.css",
-    "main.js": "/static/js/main.a06fa3c9.js",
+    "main.css": "/static/css/main.b14bc1aa.css",
+    "main.js": "/static/js/main.a43e9b7d.js",
     "static/js/159.47957a85.chunk.js": "/static/js/159.47957a85.chunk.js",
     "static/js/53.a65bb39f.chunk.js": "/static/js/53.a65bb39f.chunk.js",
     "static/js/255.24378b37.chunk.js": "/static/js/255.24378b37.chunk.js",
-    "static/media/coin98.svg": "/static/media/coin98.c620212f5495d8f56c9b36bbe0ae735b.svg",
     "static/media/bg.svg": "/static/media/bg.ec1d877ad703f03a62b2.svg",
     "static/media/logo.svg": "/static/media/logo.522f05610d1a1ffa6fa726de42db510f.svg",
     "static/media/logo-mobile.svg": "/static/media/logo-mobile.6ee979b89265a9dcad4e6b444e886af1.svg",
-    "static/media/icon-handsack.svg": "/static/media/icon-handsack.2118f0c9696de1d010a2b6b98dfa522a.svg",
     "static/media/icon-tw.svg": "/static/media/icon-tw.90c5a55e07d2f6cefd35b795a54bb823.svg",
     "static/media/icon-tele.svg": "/static/media/icon-tele.27a415accd8984de2107c69c46b151ac.svg",
     "static/media/icon-medium.svg": "/static/media/icon-medium.2aef2360b0b318af8378a56653b2804d.svg",
-    "static/media/sentre.svg": "/static/media/sentre.112adc86d9b397b9f7af42c44cabeaa0.svg",
     "index.html": "/index.html",
     "static/media/icon-telegram.svg": "/static/media/icon-telegram.2450489f40d03000fe65fc1c6f238d85.svg",
     "static/media/icon-arrow.svg": "/static/media/icon-arrow.752a208f36479490d91ecf3405b4d001.svg",
-    "main.797b9832.css.map": "/static/css/main.797b9832.css.map",
-    "main.a06fa3c9.js.map": "/static/js/main.a06fa3c9.js.map",
+    "main.b14bc1aa.css.map": "/static/css/main.b14bc1aa.css.map",
+    "main.a43e9b7d.js.map": "/static/js/main.a43e9b7d.js.map",
     "159.47957a85.chunk.js.map": "/static/js/159.47957a85.chunk.js.map",
     "53.a65bb39f.chunk.js.map": "/static/js/53.a65bb39f.chunk.js.map",
     "255.24378b37.chunk.js.map": "/static/js/255.24378b37.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.797b9832.css",
-    "static/js/main.a06fa3c9.js"
+    "static/css/main.b14bc1aa.css",
+    "static/js/main.a43e9b7d.js"
   ]
 }
