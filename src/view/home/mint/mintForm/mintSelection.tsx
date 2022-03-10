@@ -22,7 +22,9 @@ const MintInfo = ({ onClick = () => {} }: MintInfoProps) => {
   return (
     <Space style={{ cursor: 'pointer' }} align="center" onClick={onClick}>
       <MintAvatar mintAddress={mintSelected} />
-      <MintSymbol mintAddress={mintSelected} />
+      <Typography.Text style={{ fontSize: 16 }}>
+        <MintSymbol mintAddress={mintSelected} />
+      </Typography.Text>
     </Space>
   )
 }
@@ -41,6 +43,7 @@ const MintSelection = () => {
       return { mintAddress: secureToken.toBase58(), state }
     },
   )
+
   const filterMints = useMemo(() => {
     let condition = ''
     if (burnType) condition = 'burnOnly'
@@ -64,7 +67,7 @@ const MintSelection = () => {
   }, [onInit])
 
   return (
-    <Row gutter={[16, 16]}>
+    <Row gutter={[16, 16]} align="middle" style={{ minHeight: 30 }}>
       <Col span={24}>
         <Space style={{ cursor: 'pointer' }} onClick={() => setVisible(true)}>
           <MintInfo />

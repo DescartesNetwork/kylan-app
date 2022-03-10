@@ -1,7 +1,6 @@
-import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import { ReactNode, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { BN } from '@project-serum/anchor'
-import { account } from '@senswap/sen-js'
 
 import { Col, Row, Space, Typography, Button } from 'antd'
 import IonIcon from 'components/ionicon'
@@ -11,12 +10,8 @@ import { AppState } from 'store'
 import CardPayBack from './cardPayBack'
 import { PRECISION, PayState } from 'constant'
 import useMintDecimals from 'hook/useMintDecimal'
-import configs from 'configs'
 import { MintSymbol } from 'shared/antd/mint'
-
-const {
-  sol: { printerAddress },
-} = configs
+import useCeritificateAddress from 'hook/useCertificateAddress'
 
 const RowContent = ({
   label = '',
@@ -99,42 +94,15 @@ const ExchangeRate = ({ rate }: { rate: BN | undefined }) => {
 }
 
 const Infomations = () => {
-  const [certAddress, setCertAddress] = useState('')
   const {
-    bid: { bidAmount },
-    main: { printerType, mintSelected },
+    main: { printerType },
     certificates,
   } = useSelector((state: AppState) => state)
+  const { certAddress } = useCeritificateAddress()
   const { fee, rate } = certificates[certAddress] || {}
-  const secureDecimal = useMintDecimals(mintSelected) || 0
 
   const payback = printerType === PayState.Payback
   const burnFee = `${(fee?.toNumber() / PRECISION) * 100 || 0}%`
-  const received = useMemo(() => {
-    if (!rate) return 0
-    const secure = rate2Price(rate, secureDecimal)
-    if (payback) return Number(bidAmount) / secure
-    return Number(bidAmount) * secure
-  }, [bidAmount, payback, rate, secureDecimal])
-
-  const getCertAddress = useCallback(async () => {
-    if (!account.isAddress(mintSelected)) return
-    try {
-      const { kylan } = window.kylan
-      const certAddress = await kylan.deriveCertAddress(
-        printerAddress,
-        mintSelected,
-      )
-
-      setCertAddress(certAddress)
-    } catch (err: any) {
-      window.notify({ type: 'error', description: err.message })
-    }
-  }, [mintSelected])
-
-  useEffect(() => {
-    getCertAddress()
-  }, [getCertAddress])
 
   return (
     <Row gutter={[24, 24]}>
@@ -153,23 +121,6 @@ const Infomations = () => {
             <RowContent
               label={payback ? 'Redemption fee' : 'Deposit Fee'}
               value={payback ? burnFee : '0%'}
-            />
-          </Col>
-          <Col span={24}>
-            <RowContent
-              label="Estimated received"
-              value={
-                <Space>
-                  <Typography.Text>
-                    {numeric(received).format('0,0.[0000]a')}
-                  </Typography.Text>
-                  {!payback ? (
-                    <Typography.Text>KUSD</Typography.Text>
-                  ) : (
-                    <MintSymbol mintAddress={mintSelected} />
-                  )}
-                </Space>
-              }
             />
           </Col>
         </Row>
