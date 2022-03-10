@@ -22,12 +22,11 @@ const CertificateWatcher = () => {
 
   const fetchData = useCallback(async () => {
     try {
-      if (!isWalletAddress(walletAddress)) return
       await dispatch(getCertificates())
     } catch (er: any) {
       window.notify({ type: 'error', description: er.message })
     }
-  }, [dispatch, walletAddress])
+  }, [dispatch])
 
   // Watch cheque changes
   const watchData = useCallback(async () => {

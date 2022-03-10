@@ -1,23 +1,25 @@
-import { Avatar, Col, Row, Space, Typography, Image } from 'antd'
-
-import logoSentre from 'static/images/logo/sentre.svg'
-import logoCoin98 from 'static/images/logo/coin98.svg'
-import iconHandsack from 'static/images/icon-handsack.svg'
+import { Col, Row, Tooltip, Typography } from 'antd'
+import useChequeBalance from 'hook/useChequeBalance'
+import { numeric } from 'shared/util'
 
 const MintHeader = () => {
+  const { totalBalance } = useChequeBalance()
+
   return (
-    <Row gutter={[16, 16]}>
+    <Row gutter={[16, 16]} align="middle">
       <Col flex="auto">
-        <Typography.Text type="secondary">Powered by</Typography.Text>
+        <Typography.Text>Total value locked</Typography.Text>
       </Col>
       <Col>
-        <Space size={8}>
-          <Typography.Text>Sentre</Typography.Text>
-          <Avatar src={logoSentre} size={24} />
-          <Image src={iconHandsack} preview={false} />
-          <Avatar src={logoCoin98} size={24} />
-          <Typography.Text>Coin98</Typography.Text>
-        </Space>
+        <Tooltip
+          title={`$${totalBalance}`}
+          placement="topLeft"
+          arrowPointAtCenter
+        >
+          <Typography.Title level={3}>
+            ${numeric(totalBalance).format('0,0.[000]a')}
+          </Typography.Title>
+        </Tooltip>
       </Col>
     </Row>
   )

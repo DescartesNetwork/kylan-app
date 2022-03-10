@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { Button, Card, Col, Row, Space, Tooltip, Typography } from 'antd'
-import NumericInput from 'shared/antd/numericInput'
+import { Card, Col, Row, Space, Tooltip, Typography } from 'antd'
 
 import { AppDispatch, AppState } from 'store'
 import { setBidAmount } from 'store/bid.reducer'
@@ -11,6 +10,7 @@ import { numeric } from 'shared/util'
 import { MintSymbol } from 'shared/antd/mint'
 import useChequeBalance from 'hook/useChequeBalance'
 import useAccountBalance from 'hook/useAccountBalance'
+import NumericFreeSizeInput from 'components/numericFreeSizeInput'
 
 enum AmountSize {
   large = 'large',
@@ -51,9 +51,9 @@ const Amount = () => {
       style={{ background: '#E0E1EE' }}
       bodyStyle={{ padding: '12px 16px' }}
     >
-      <Row>
+      <Row gutter={[8, 8]}>
         <Col span={24}>
-          <Row gutter={0}>
+          <Row>
             <Col flex="auto">
               <Typography.Text type="secondary">Amount</Typography.Text>
             </Col>
@@ -62,7 +62,10 @@ const Amount = () => {
                 <Space size={4}>
                   <Typography.Text type="secondary">Available:</Typography.Text>
                   <Space>
-                    <Typography.Text>
+                    <Typography.Text
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => dispatch(setBidAmount(`${maxBalance}`))}
+                    >
                       {numeric(maxBalance).format('0,0.[000]a')}
                     </Typography.Text>
                     <Typography.Text type="secondary" className="caption">
@@ -75,19 +78,13 @@ const Amount = () => {
           </Row>
         </Col>
         <Col span={24}>
-          <NumericInput
+          <NumericFreeSizeInput
             className={`special-font special-font-${font}`}
             placeholder="0"
-            bordered={false}
-            onValue={(val) => dispatch(setBidAmount(val))}
+            onChange={(val) => dispatch(setBidAmount(val as string))}
             value={bidAmount}
-            suffix={
-              <Button onClick={() => dispatch(setBidAmount(`${maxBalance}`))}>
-                <Typography.Title level={5}>Max</Typography.Title>
-              </Button>
-            }
           />
-          <Col style={{ height: 22 }} /> {/* Safe space  */}
+          <Col style={{ height: 18 }} /> {/* Safe space  */}
         </Col>
       </Row>
     </Card>

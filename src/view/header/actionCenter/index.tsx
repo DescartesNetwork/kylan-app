@@ -11,7 +11,6 @@ import {
   Space,
   Popover,
   Typography,
-  Avatar,
   Tooltip,
   Modal,
   Input,
@@ -23,14 +22,12 @@ import PixelCard from 'components/pixelCard'
 import PixelButton from 'components/pixelButton'
 
 import { AppState, AppDispatch } from 'store'
+import { Role } from 'constant'
 import { disconnectWallet } from 'store/wallet.reducer'
 import { explorer, numeric, shortenAddress } from 'shared/util'
-import useChequeBalance from 'hook/useChequeBalance'
 import configs from 'configs'
 
-import logo from 'static/images/logo/logo-mobile.svg'
 import './index.less'
-import { Role } from 'constant'
 
 const {
   sol: { printerAddress },
@@ -48,7 +45,6 @@ const ActionCenter = () => {
   } = useSelector((state: AppState) => state)
   const history = useHistory()
   const { disconnect } = useSolana()
-  const { totalBalance } = useChequeBalance()
 
   const transferable = role === Role.admin && authority === walletAddress
 
@@ -83,14 +79,6 @@ const ActionCenter = () => {
 
   return (
     <Space className="wallet-center">
-      <Tooltip placement="bottom" title={`Total: ${totalBalance} KUSD`}>
-        <Space className="kylan-balance" size={12}>
-          <Avatar size={24} src={logo} />
-          <Typography.Text>
-            {numeric(totalBalance).format('0,0.[000]a')}
-          </Typography.Text>
-        </Space>
-      </Tooltip>
       <Popover
         trigger="click"
         placement="bottomRight"

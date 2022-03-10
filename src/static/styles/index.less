@@ -158,41 +158,46 @@
 }
 
 .special-font {
-  input {
+  overflow: hidden;
+  transition: height 0.2s linear;
+  & input {
+    position: relative;
     font-weight: 800;
     text-align: center;
-    margin-right: -71px;
     background: transparent;
+    box-sizing: content-box;
+    bottom: 50%;
+    z-index: 0;
     &::placeholder {
       color: #c2c2dd;
     }
   }
   &-large {
-    input {
+    height: 96px;
+    & input {
       font-size: 96px;
-      height: 96px;
-      line-height: 96px;
+      height: calc(90px * 2);
     }
   }
   &-medium {
-    input {
+    height: 72px;
+    & input {
       font-size: 72px;
-      height: 72px;
-      line-height: 72px;
+      height: calc(66px * 2);
     }
   }
   &-small {
-    input {
+    height: 48px;
+    & input {
       font-size: 48px;
-      height: 48px;
-      line-height: 48px;
+      height: calc(42px * 2);
     }
   }
   &-xsmall {
-    input {
+    height: 24px;
+    & input {
+      height: 46px;
       font-size: 24px;
-      height: 24px;
-      line-height: 24px;
     }
   }
   .kylan-input-suffix {
