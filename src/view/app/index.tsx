@@ -24,7 +24,7 @@ const App = () => {
           <Header />
         </Card>
       </Affix>
-      <Layout style={{ padding: '72px 16px 16px' }}>
+      <Layout style={{ padding: 16 }}>
         <Switch>
           <Route exact path="/home" component={Home} />
           <PrivateRoute exact path="/admin" component={Admin} />
