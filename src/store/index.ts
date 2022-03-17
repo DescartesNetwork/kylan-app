@@ -1,4 +1,4 @@
-import { devTools, bigintSerializationMiddleware } from 'shared/devTools'
+import { devTools, bigintSerializationMiddleware } from 'store/devTools'
 
 import { configureStore } from '@reduxjs/toolkit'
 
