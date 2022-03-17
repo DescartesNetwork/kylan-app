@@ -47,7 +47,7 @@ const conf: Record<Net, Conf> = {
    */
   mainnet: {
     ...SOLVARS,
-    node: 'https://solana-api.projectserum.com',
+    node: 'https://api.google.mainnet-beta.solana.com',
     chainId: 101,
     swapAddress: 'SSW7ooZ1EbEognq5GosbygA3uWW1Hq1NsFq6TsftCFV',
     taxmanAddress: '9doo2HZQEmh2NgfT3Yx12M89aoBheycYqH1eaR5gKb3e',

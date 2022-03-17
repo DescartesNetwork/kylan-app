@@ -17,6 +17,7 @@ import { numeric, rate2Price } from 'shared/util'
 import { CERTIFICATE_STATUS, PRECISION } from 'constant'
 import { useAccount } from 'providers'
 import { getAccount } from 'store/accounts.reducer'
+import { account } from '@senswap/sen-js'
 
 type CertStatus =
   | 'uninitialized'
@@ -104,21 +105,31 @@ const CertificateCard = ({ certAddress }: { certAddress: string }) => {
     try {
       const { kylan } = window.kylan
       const parseFee = Number(fee)
-      if (parseFee && parseFee !== defaultFee) {
+      if (!parseFee || !account.isAddress(taxman) || !status)
+        throw new Error('Invalid input')
+      if (parseFee !== defaultFee) {
         const feeBN = new BN(Math.floor((parseFee / 100) * PRECISION))
         await kylan.setCertFee(feeBN, certAddress)
+        window.notify({
+          type: 'success',
+          description: 'Certificate fee has been updated.',
+        })
       }
-      if (taxman && taxman !== defaultTaxmanAuth)
+      if (taxman !== defaultTaxmanAuth) {
         await kylan.setCertTaxman(taxman, certAddress)
-      if (status && status !== defaultStatus) {
+        window.notify({
+          type: 'success',
+          description: 'Certificate fee has been updated.',
+        })
+      }
+      if (status !== defaultStatus) {
         const certStatus = CERTIFICATE_STATUS[status]
         await kylan.setCertState(certStatus, certAddress)
+        window.notify({
+          type: 'success',
+          description: 'Certificate status has been updated.',
+        })
       }
-      window.notify({
-        type: 'success',
-        description: 'Certificate has been updated.',
-      })
-      return setFee('')
     } catch (err: any) {
       window.notify({ type: 'error', description: err.message })
     } finally {
@@ -141,6 +152,18 @@ const CertificateCard = ({ certAddress }: { certAddress: string }) => {
   useEffect(() => {
     getAccountData()
   }, [getAccountData])
+
+  useEffect(() => {
+    if (defaultFee) return setFee(`${defaultFee}`)
+  }, [defaultFee])
+
+  useEffect(() => {
+    if (defaultTaxmanAuth) return setTaxman(defaultTaxmanAuth)
+  }, [defaultTaxmanAuth])
+
+  useEffect(() => {
+    if (defaultStatus) return setStatus(defaultStatus as CertStatus)
+  }, [defaultStatus])
 
   return (
     <Col xs={24} md={12} lg={8}>
@@ -166,7 +189,7 @@ const CertificateCard = ({ certAddress }: { certAddress: string }) => {
                   value={
                     <NumericInput
                       style={{ maxWidth: 163 }}
-                      value={fee || defaultFee}
+                      value={fee}
                       onValue={setFee}
                       suffix="%"
                     />
@@ -180,7 +203,7 @@ const CertificateCard = ({ certAddress }: { certAddress: string }) => {
                     <Input
                       style={{ maxWidth: 163 }}
                       className="field-taxman"
-                      placeholder={defaultTaxmanAuth}
+                      value={taxman}
                       onChange={(e) => setTaxman(e.target.value)}
                     />
                   }

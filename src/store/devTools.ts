@@ -1,3 +1,6 @@
+import { web3 } from '@project-serum/anchor'
+import { BN } from 'bn.js'
+
 // Bugfix performance
 // https://github.com/zalmoxisus/redux-devtools-extension/blob/master/docs/Troubleshooting.md#excessive-use-of-memory-and-cpu
 export const devTools = (appName: string): any => {
@@ -27,7 +30,9 @@ const isPlain = (val: any): boolean => {
     typeof val === 'number' ||
     Array.isArray(val) ||
     isPlainObject(val) ||
-    typeof val === 'bigint'
+    typeof val === 'bigint' ||
+    val instanceof web3.PublicKey ||
+    val instanceof BN
   )
 }
 BigInt.prototype.toJSON = function () {

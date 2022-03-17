@@ -29,15 +29,17 @@ const PrinterAction = () => {
   } = useSelector((state: AppState) => state)
   const secureDecimals = useMintDecimals(mintSelected) || 0
   const accountBalance = useAccountBalance()
-  const chequeBalance = useChequeBalance()
+  const { balance: chequeBalance } = useChequeBalance()
 
   const payback = printerType === PayState.Payback
   const maxBalance = payback ? chequeBalance : accountBalance
   const disabled =
-    !account.isAddress(mintSelected) || !Number(bidAmount) || !maxBalance
+    !account.isAddress(mintSelected) ||
+    !Number(bidAmount) ||
+    Number(bidAmount) > maxBalance
 
   const onMint = useCallback(async () => {
-    if (!account.isAddress(mintSelected) || !Number(bidAmount)) return
+    if (disabled) return
     setLoading(true)
     const amount = new BN(Number(bidAmount) * 10 ** secureDecimals)
     try {
@@ -54,10 +56,10 @@ const PrinterAction = () => {
     } finally {
       setLoading(false)
     }
-  }, [bidAmount, dispatch, mintSelected, secureDecimals])
+  }, [bidAmount, disabled, dispatch, mintSelected, secureDecimals])
 
   const onRedeem = useCallback(async () => {
-    if (!account.isAddress(mintSelected) || !Number(bidAmount)) return
+    if (disabled) return
     setLoading(true)
     const amount = new BN(Number(bidAmount) * 10 ** KUSD_DECIMAL)
     try {
@@ -74,7 +76,7 @@ const PrinterAction = () => {
     } finally {
       setLoading(false)
     }
-  }, [bidAmount, dispatch, mintSelected])
+  }, [bidAmount, disabled, dispatch, mintSelected])
 
   if (!payback)
     return (
