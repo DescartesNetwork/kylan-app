@@ -3,7 +3,7 @@ import MintSelection from './mintSelection'
 
 import { useUI } from 'providers'
 import IconArrow from 'static/images/icon-arrow.svg'
-import KylanIcon from 'static/images/logo/logo-mobile.svg'
+import KylanIcon from 'static/images/icon-kylan.svg'
 import { useSelector } from 'react-redux'
 import { AppState } from 'store'
 import useEstReceived from 'hook/useEstReceived'

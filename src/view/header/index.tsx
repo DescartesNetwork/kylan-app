@@ -23,13 +23,14 @@ const Header = () => {
   } = useUI()
 
   const logo = infix !== 'xs' ? Logo : MobileLogo
+  const logoWidth = infix !== 'xs' ? {} : { width: 32 }
 
   return (
     <Row gutter={16} style={{ maxWidth: 1200, margin: 'auto' }}>
       <Col flex="auto">
         <Image
           src={logo}
-          style={{ cursor: 'pointer' }}
+          style={{ ...logoWidth, cursor: 'pointer' }}
           onClick={() => history.push('/home')}
           preview={false}
         />
