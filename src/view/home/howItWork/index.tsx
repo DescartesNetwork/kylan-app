@@ -14,7 +14,12 @@ const HowItWork = () => {
           {HOW_IT_WORK.map(({ title, description }, idx) => (
             <Col span={24} key={idx}>
               <Collapse className="mint-hiw">
-                <Collapse.Panel header={title} key={idx}>
+                <Collapse.Panel
+                  header={
+                    <Typography.Title level={5}>{title}</Typography.Title>
+                  }
+                  key={idx}
+                >
                   <Typography.Text>{description}</Typography.Text>
                 </Collapse.Panel>
               </Collapse>

@@ -18,7 +18,7 @@ import configs from 'configs'
 import { useMint } from 'providers'
 import { explorer, price2Rate } from 'shared/util'
 import { getCertificate } from 'store/certificate.reducer'
-import kylanIcon from 'static/images/logo/logo-mobile.svg'
+import kylanIcon from 'static/images/icon-kylan.svg'
 import { PRECISION } from 'constant'
 
 const {
