@@ -5,14 +5,12 @@ import { useUI } from 'providers'
 import Telegram from 'static/images/social/icon-tele.svg'
 import Twitter from 'static/images/social/icon-tw.svg'
 import Discord from 'static/images/social/icon-discord.svg'
-import Substack from 'static/images/social/icon-substack.svg'
 import Docs from 'static/images/social/icon-docs.svg'
 
 const SOCIAL = [
   { icon: Discord, url: 'https://discord.gg/ydR2hWUqWR' },
   { icon: Telegram, url: 'https://t.me/KylanHQ' },
   { icon: Twitter, url: 'https://twitter.com/KylanHQ' },
-  { icon: Substack, url: 'https://kylanhq.substack.com' },
   { icon: Docs, url: 'https://docs.kylan.so' },
 ]
 
